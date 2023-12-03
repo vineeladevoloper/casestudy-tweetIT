@@ -1,0 +1,26 @@
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>User Name</th>
+                <th>Role</th>
+                <th>User Email</th>
+                <th>User Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of users">
+                <td>{{u.userId}}</td>
+                <td>{{u.userName}}</td>
+                <td>{{u.role}}</td>
+                <td>{{u.userEmail}}</td>
+                <td>{{u.userType}}</td>
+                <td colspan="2">
+                    <button class="btn btn-primary" (click)="edit(u.userId)">Edit</button> &nbsp;
+                    <button class="btn btn-primary" (click)="delete(u.userId)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table> 
+</div>
