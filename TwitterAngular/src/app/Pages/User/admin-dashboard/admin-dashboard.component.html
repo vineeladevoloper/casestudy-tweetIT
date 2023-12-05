@@ -1,2 +1,33 @@
-<h2>Admin Dashboard</h2>
-<router-outlet></router-outlet>
+<!-- app.component.html -->
+
+<div class="container-fluid">
+    <h2>Admin Dashboard</h2>
+    <h5>Welcome {{admin.userName}}!</h5>
+    <div class="row">
+      <!-- Left Pane -->
+      <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'profile/' + admin.userId">View Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'edit-user/' + admin.userId">Edit Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'list-users'">List users</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="">List Posts</a>
+            </li>     
+          </ul>
+        </div>
+      </nav>
+  
+      <!-- Right Pane -->
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+  

@@ -1,4 +1,31 @@
 <div class="container">
+    <div class="container">
+        Search: <input type="text" [(ngModel)]="searchUserId">
+        <button class="btn btn-primary" (click)="applySearchFilter()">Search</button>
+        <p>{{errmsg}}</p>
+        <div *ngIf="searchflag">
+            <table class="table table-bordered">
+                    <th>User ID</th>
+                    <th>User Name</th>
+                    <th>Role</th>
+                    <th>User Email</th>
+                    <th>User Type</th>
+                <tbody>
+                        <td>{{user.userId}}</td>
+                        <td>{{user.userName}}</td>
+                        <td>{{user.role}}</td>
+                        <td>{{user.userEmail}}</td>
+                        <td>{{user.userType}}</td>
+                        <div *ngIf="user.userType === 'Normal'">
+                            <button class="btn btn-primary" (click)="upgradefn(user.userId)">Upgrade</button>
+                        </div>
+                        <div *ngIf="user.userType !== 'Admin' && user.userType !=='Blocked'">
+                            <button class="btn btn-primary" (click)="blockfn(user.userId)">Block</button>
+                        </div>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -17,8 +44,14 @@
                 <td>{{u.userEmail}}</td>
                 <td>{{u.userType}}</td>
                 <td colspan="2">
-                    <button class="btn btn-primary" (click)="edit(u.userId)">Edit</button> &nbsp;
-                    <button class="btn btn-primary" (click)="delete(u.userId)">Delete</button>
+                    <!-- <button class="btn btn-primary" (click)="edit(u.userId)">Edit</button> &nbsp; -->
+                    <!-- <button class="btn btn-primary" (click)="delete(u.userId)">Delete</button> -->
+                    <div *ngIf="u.userType === 'Normal'">
+                        <button class="btn btn-primary" (click)="upgradefn(u.userId)">Upgrade</button>
+                    </div>
+                    <div *ngIf="u.userType !== 'Admin' && u.userType !=='Blocked'">
+                        <button class="btn btn-primary" (click)="blockfn(u.userId)">Block</button>
+                    </div>
                 </td>
             </tr>
         </tbody>

@@ -61,7 +61,7 @@ namespace MyTwitterAPI.Controllers
                 else
                 {
                     _logger.Error($"User with Id {userId} not found");
-                    return StatusCode(200, new JsonResult($"User with Id {userId} not found"));
+                    return StatusCode(200);
                 }
             }
             catch (Exception ex)
@@ -71,14 +71,15 @@ namespace MyTwitterAPI.Controllers
             }
         }
 
+        
         [HttpPost,Route("UpgradeUser")]
-        public IActionResult UpgradeUser([FromBody] UpgradeUserRequest upgradeRequest)
+        public IActionResult UpgradeUser([FromBody] UserRequest upgradeRequest)
         {
             try
             {
-                string userIdToUpgrade = upgradeRequest.UserIdToUpgrade;
+                string userIdTo = upgradeRequest.UserIdTo;
                 string adminUserId = upgradeRequest.AdminUserId;
-                var result = userService.UpgradeUser(userIdToUpgrade, adminUserId);
+                var result = userService.UpgradeUser(userIdTo, adminUserId);
                 if (result.Success)
                 {
                     _logger.Info("User upgraded successfully");
@@ -95,9 +96,34 @@ namespace MyTwitterAPI.Controllers
                 _logger.Error(ex.Message);
                 return StatusCode(500, ex.Message);
             }
-
-            return Ok("User upgraded successfully");
         }
+
+        [HttpPost, Route("BlockUser")]
+        public IActionResult BlockUser([FromBody] UserRequest blockRequest)
+        {
+            try
+            {
+                string userIdTo = blockRequest.UserIdTo;
+                string adminUserId = blockRequest.AdminUserId;
+                var result = userService.BlockUser(userIdTo, adminUserId);
+                if (result.Success)
+                {
+                    _logger.Info("User upgraded successfully");
+                    return StatusCode(200);
+                }
+                else
+                {
+                    _logger.Error(result.Message);
+                    return StatusCode(400, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpPost,Route("Register")]
         //[AllowAnonymous]
@@ -114,8 +140,8 @@ namespace MyTwitterAPI.Controllers
                 {
                     user.UserType = "Normal";
                 }
-                user.VerifiedById = null;
-                user.VerifiedUser = null;
+                user.ActionById = null;
+                user.ActionDoneUser = null;
                 var result=userService.AddUser(user);
                 if (result.Success)
                 {
@@ -193,7 +219,7 @@ namespace MyTwitterAPI.Controllers
                 AuthReponse authReponse = new AuthReponse();
                 if (user != null)
                 {
-                    authReponse.UserName = user.UserName;
+                    authReponse.UserId = user.UserId;
                     authReponse.Role = user.Role;
                     authReponse.Token = GetToken(user);
                 }

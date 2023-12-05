@@ -1,24 +1,22 @@
 import { Component } from '@angular/core';
 import { UserDTO } from '../../../Models/User/user-dto';
+import { ActivatedRoute ,Router} from '@angular/router';
+import { HttpClient,HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router ,ActivatedRoute} from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-edit-user',
+  selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule,FormsModule,HttpClientModule],
-  templateUrl: './edit-user.component.html',
-  styleUrl: './edit-user.component.css'
+  imports: [CommonModule,HttpClientModule],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css'
 })
-export class EditUserComponent {
+export class ProfileComponent {
   user:UserDTO;
   userId?:string;
   errMsg: string = '';
   isUserExist: boolean = false;
-  constructor(private router:Router,private activateRoute: ActivatedRoute,private http:HttpClient){
+  constructor(private activateRoute:ActivatedRoute,private http:HttpClient){
     this.user=new UserDTO();
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     console.log(this.userId);
@@ -41,13 +39,4 @@ export class EditUserComponent {
         }
       });
   }
-  edit() {
-    this.http
-      .put('http://localhost:5250/api/User/EditUser', this.user)
-      .subscribe((response) => {
-        console.log(response);
-      });
-    this.router.navigateByUrl('list-users');
-  }
-  
 }

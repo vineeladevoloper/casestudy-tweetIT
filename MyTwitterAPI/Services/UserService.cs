@@ -75,8 +75,8 @@ namespace MyTwitterAPI.Services
                 {
                     context.Entry(existinguser).State = EntityState.Detached;
                     newuser.UserType = existinguser.UserType;
-                    newuser.VerifiedById = existinguser.VerifiedById;
-                    newuser.VerifiedUser = existinguser.VerifiedUser;
+                    newuser.ActionById = existinguser.ActionById;
+                    newuser.ActionDoneUser = existinguser.ActionDoneUser;
                     context.Users.Update(newuser);
                     context.SaveChanges();
                     return new ResultModel { Success = true, Message = "User edited successfully." };
@@ -125,6 +125,19 @@ namespace MyTwitterAPI.Services
             return context.Users.SingleOrDefault(u => u.UserEmail == email && u.Password == password);
         }
 
+        User IUserService.GetUserByEmail(string email)
+        {
+            try
+            {
+                return context.Users.SingleOrDefault(u=>u.UserEmail==email);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         ResultModel IUserService.UpgradeUser(string userId,string adminId)
         {
             try
@@ -137,11 +150,40 @@ namespace MyTwitterAPI.Services
                     context.Entry(user).State = EntityState.Detached;
                     context.Entry(admin).State = EntityState.Detached;
                     user.UserType ="Verified";
-                    user.VerifiedById = admin.UserId;
-                    user.VerifiedUser = admin;
+                    user.ActionById = admin.UserId;
+                    user.ActionDoneUser = admin;
                     context.Users.Update(user);
                     context.SaveChanges();
                     return new ResultModel { Success = true, Message = "User upgraded successfully." };
+                }
+                else
+                {
+                    return new ResultModel { Success = false, Message = "User or Admin not found." };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
+            }
+        }
+        ResultModel IUserService.BlockUser(string userId, string adminId)
+        {
+            try
+            {
+                User user = context.Users.SingleOrDefault(u => u.UserId == userId);
+                User admin = context.Users.SingleOrDefault(u => u.UserId == adminId && u.Role == "Admin");
+
+                if (user != null || admin != null)
+                {
+                    context.Entry(user).State = EntityState.Detached;
+                    context.Entry(admin).State = EntityState.Detached;
+                    user.UserType = "Blocked";
+                    user.ActionById = admin.UserId;
+                    user.ActionDoneUser = admin;
+                    context.Users.Update(user);
+                    context.SaveChanges();
+                    return new ResultModel { Success = true, Message = "User Blocked successfully." };
                 }
                 else
                 {

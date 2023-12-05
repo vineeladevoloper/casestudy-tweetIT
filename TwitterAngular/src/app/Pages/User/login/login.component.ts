@@ -15,6 +15,7 @@ import { UserDTO } from '../../../Models/User/user-dto';
 })
 export class LoginComponent {
   login:Login;
+  user:any;
   errMsg: string = '';
   httpResponse: any;
   constructor(private router:Router,private http:HttpClient){
@@ -22,19 +23,20 @@ export class LoginComponent {
   }
     
   onSubmit(): void {
-    console.log(JSON.stringify(this.login, null, 2));
     this.http.post('http://localhost:5250/api/User/Validate',this.login)
     .subscribe((response)=>{
       this.httpResponse = response;
         console.log(this.httpResponse);
         if (this.httpResponse.token != null) {
-          //store token in local storage
           localStorage.setItem('token', this.httpResponse.token);
-          if (this.httpResponse.role == 'Admin') {
+          localStorage.setItem('userId',this.httpResponse.userId);
+          if (this.httpResponse.role == 'Admin') 
+          {
             this.router.navigateByUrl('admin-dashboard');
             console.log("admin");
-            //redirect to customer dashboard
-          } else if (this.httpResponse.role == 'User') {
+          } 
+          else if (this.httpResponse.role == 'User') 
+          {
             this.router.navigateByUrl('user-dashboard');
             console.log("user");
           }

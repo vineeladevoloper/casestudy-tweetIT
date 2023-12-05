@@ -1,8 +1,8 @@
 ﻿namespace MyTwitterAPI.Model
 {
-    public class UpgradeUserRequest
+    public class UserRequest
     {
-        public string? UserIdToUpgrade { get; set; }
+        public string? UserIdTo { get; set; }
         public string? AdminUserId { get; set; }
     }
 }

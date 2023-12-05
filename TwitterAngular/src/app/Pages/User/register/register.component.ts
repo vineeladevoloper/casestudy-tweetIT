@@ -31,7 +31,7 @@ export class RegisterComponent {
     .subscribe((response)=>{
       console.log(response);
     })
-    this.router.navigateByUrl('list-users');
+    this.router.navigateByUrl('login');
   }
 
   onReset(form: NgForm): void {
