@@ -8,5 +8,6 @@
         public string? Description { get; set; }
         public string? Img { get; set; }
         public DateTime DateandTime { get; set; }
+        public string? UserName { get; set; }
     }
 }

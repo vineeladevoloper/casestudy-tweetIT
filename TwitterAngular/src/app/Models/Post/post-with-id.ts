@@ -4,4 +4,6 @@ export class PostWithId {
     public title?:string;
     public description?:string;
     public img?:string;
+    public userName?:string;
+    public dateandTime?:Date;
 }

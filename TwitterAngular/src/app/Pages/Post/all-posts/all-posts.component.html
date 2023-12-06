@@ -1,17 +1,24 @@
 <div class="container">
-    <h2 class="mt-4 mb-4">Posts List</h2>
-    <div class="row">
-      <div *ngFor="let post of posts" class="col-md-6 mb-4">
-        <div class="card">
-          <img [src]="createImgPath(post.img)" alt="Post Image" class="card-img-top small-image">
-          <div class="card-body">
-            <h5 class="card-title">{{ post.title }}</h5>
-            <p class="card-text">{{ post.description }}</p>
-            <p class="card-text" >{{ post.userId }}</p>
-            <!-- <p class="card-text" >{{ getName(post.userId) }}</p>             -->
-          </div>
+  <h2 class="mt-4 mb-4">Posts List</h2>
+  <div class="mb-4">
+    <input type="text" class="form-control" placeholder="Search by Title" [(ngModel)]="searchTerm" (input)="onSearch()">
+    <!-- You may need to import FormsModule in your module and provide it in the imports array for [(ngModel)] to work -->
+  </div>
+  <div class="row">
+    <div *ngFor="let post of posts" class="col-lg-4 col-md-6 mb-4">
+
+      <!-- Single Card for Post -->
+      <div class="card border-dark">
+        <img [src]="createImgPath(post.img)" alt="Post Image" class="card-img-top custom-image">
+        <div class="card-body">
+          <h5 class="card-title">{{ 'Title: ' + post.title }}</h5>
+          <p class="card-text">{{ 'Description: ' + post.description }}</p>
+          <p class="card-text">{{ 'User ID: ' + post.userId }}</p>
+          <p class="card-text">{{ 'User Name: ' + post.userName }}</p>
+          <p class="card-text">{{ 'Date and Time: ' + (post.dateandTime | date:'yyyy-MM-dd HH:mm') }}</p>
         </div>
       </div>
+
     </div>
   </div>
-  
+</div>

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostWithoutIdDTO } from '../../../Models/Post/post-without-id-dto';
 import { UploadImgComponent } from '../upload-img/upload-img.component';
-import { RouterOutlet,Router } from '@angular/router';
+import { RouterOutlet,Router ,ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-add-post',
@@ -18,9 +18,12 @@ export class AddPostComponent {
   create:boolean;
   response: any;
   msg?:string='';
-  constructor(private http:HttpClient,private router:Router){
+  userId?:string;
+  constructor(private http:HttpClient,private router:Router,private activateRoute: ActivatedRoute){
     this.post=new PostWithoutIdDTO;
+    this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     this.response={dbPath: ''};
+    this.post.userId=this.userId;
     this.create=false;
   }
   uploadFinished = (event: any) => { 

@@ -3,7 +3,7 @@ import { HttpClientModule ,HttpClient} from '@angular/common/http';
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { UserDTO } from '../../../Models/User/user-dto';
-import { Router } from '@angular/router';
+import { Router} from '@angular/router';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -25,5 +25,9 @@ export class UserDashboardComponent {
         console.log(this.user);
       })
   }
-
+  logout(){
+    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
+    this.router.navigateByUrl('login');
+  }
 }

@@ -1,0 +1,4 @@
+.custom-image {
+height: 300px; /* Adjust the height as needed */
+object-fit: cover;
+}

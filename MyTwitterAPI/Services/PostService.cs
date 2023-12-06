@@ -30,12 +30,117 @@ namespace MyTwitterAPI.Services
                 throw;
             }
         }
-
-        public List<Post> GetAllPost()
+        public PostDTO GetPostById(int postId)
         {
             try
             {
-                return context.Posts.ToList();
+                var postWithUser = context.Posts.Where(p => p.PostId == postId)
+                .Include(p => p.User).SingleOrDefault();
+                if (postWithUser == null)
+                {
+                    return null;
+                }
+                PostDTO newpost = _mapper.Map<PostDTO>(postWithUser);
+                newpost.UserName = postWithUser.User?.UserName;
+                return newpost;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public List<PostDTO> SearchPostsByTitleAndUserId(string userId, string searchTerm)
+        {
+            try
+            {
+                Console.WriteLine(searchTerm);
+                Console.WriteLine(userId);
+                List<Post> matchingPosts = context.Posts
+                    .Include(p => p.User)
+                    .Where(p => p.UserId == userId && EF.Functions.Like(p.Title, $"%{searchTerm}%"))
+                    .ToList();
+
+                List<PostDTO> matchingPostDTOs = _mapper.Map<List<PostDTO>>(matchingPosts);
+
+                foreach (var postDTO in matchingPostDTOs)
+                {
+                    Console.WriteLine(postDTO.PostId);
+                    var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
+                    postDTO.UserName = name.UserName;
+                }
+
+                return matchingPostDTOs;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public List<PostDTO> SearchPostsByTitle(string searchTerm)
+        {
+            try
+            {
+                List<Post> matchingPosts = context.Posts
+            .Include(p => p.User)
+            .Where(p => EF.Functions.Like(p.Title, $"%{searchTerm}%"))
+            .ToList();
+
+                List<PostDTO> matchingPostDTOs = _mapper.Map<List<PostDTO>>(matchingPosts);
+
+                foreach (var postDTO in matchingPostDTOs)
+                {
+                    var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
+                    postDTO.UserName = name.UserName;
+                }
+
+                return matchingPostDTOs;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<PostDTO> GetPostsByUserId(string userId)
+        {
+            try
+            {
+                List<Post> userPosts = context.Posts
+                    .Include(p => p.User)
+                    .Where(p => p.UserId == userId)
+                    .ToList();
+
+                List<PostDTO> userPostDTOs = _mapper.Map<List<PostDTO>>(userPosts);
+
+                foreach (var postDTO in userPostDTOs)
+                {
+                    var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
+                    postDTO.UserName = name.UserName;
+                }
+
+                return userPostDTOs;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+                
+        public List<PostDTO> GetAllPost()
+        {
+            try
+            {
+                List<Post> postsWithUserDetails = context.Posts.Include(p => p.User).ToList();
+                List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(postsWithUserDetails);
+                foreach (var postDTO in postDTOs)
+                {
+                    var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
+                    postDTO.UserName = name.UserName;
+                }
+
+                return postDTOs;
             }
             catch (Exception)
             {
@@ -95,18 +200,7 @@ namespace MyTwitterAPI.Services
                 return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
             }
         }
-        public Post GetPostById(int postId)
-        {
-            try
-            {
-                return context.Posts.SingleOrDefault(p => p.PostId == postId);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
+        
         public List<Post> GetPostByYear(int year)
         {
             try

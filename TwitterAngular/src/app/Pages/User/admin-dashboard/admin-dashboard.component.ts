@@ -26,5 +26,9 @@ export class AdminDashboardComponent {
         console.log(this.admin);
       })
   }
-
+  logout(){
+    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
+    this.router.navigateByUrl('login');
+  }
 }

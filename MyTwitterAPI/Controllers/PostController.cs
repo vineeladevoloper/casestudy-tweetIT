@@ -49,9 +49,10 @@ namespace MyTwitterAPI.Controllers
         {
             try
             {
-                List<Post> posts = postService.GetAllPost();
-                List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(posts);
-                return StatusCode(200, postDTOs);
+
+                List<PostDTO> posts = postService.GetAllPost();
+               // List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(posts);
+                return StatusCode(200, posts);
             }
             catch (Exception ex)
             {
@@ -65,9 +66,9 @@ namespace MyTwitterAPI.Controllers
         {
             try
             {
-                Post post = postService.GetPostById(postId);
-                PostDTO postdto = _mapper.Map<PostDTO>(post);
-                return StatusCode(200, postdto);
+
+                PostDTO post = postService.GetPostById(postId);               
+                return StatusCode(200, post);
             }
             catch (Exception ex)
             {
@@ -75,6 +76,58 @@ namespace MyTwitterAPI.Controllers
                 return StatusCode(400, ex.Message);
             }
         }
+        [HttpGet, Route("SearchPostByTitle/{searchTerm}")]
+        //[AllowAnonymous]
+        public IActionResult SearchPostByTitle(string searchTerm)
+        {
+            try
+            {
+
+                List<PostDTO> post = postService.SearchPostsByTitle(searchTerm);
+                return StatusCode(200, post);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(400, ex.Message);
+            }
+        }
+
+        [HttpGet, Route("ListPostByUserId/{userId}")]
+        //[AllowAnonymous]
+        public IActionResult ListPostByUserId(string userId)
+        {
+            try
+            {
+
+                List<PostDTO> post = postService.GetPostsByUserId(userId);
+                return StatusCode(200, post);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(400, ex.Message);
+            }
+        }
+
+        [HttpGet, Route("SearchPostsByTitleAndUserId/{userId}/{searchTerm}")]
+        //[AllowAnonymous]
+        public IActionResult SearchPostsByTitleAndUserId(string userId, string searchTerm)
+        {
+            try
+            {
+               // Console.WriteLine(userId + " " + searchTerm);
+
+                List<PostDTO> post = postService.SearchPostsByTitleAndUserId(userId,searchTerm);
+                return StatusCode(200, post);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(400, ex.Message);
+            }
+        }
+
 
         [HttpPut,Route("EditPost")]
         //[Authorize(Roles = "User")]
