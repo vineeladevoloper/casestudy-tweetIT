@@ -8,15 +8,18 @@ import { AboutComponent } from './Pages/about/about.component';
 import { ContactComponent } from './Pages/contact/contact.component';
 import { UserDashboardComponent } from './Pages/User/user-dashboard/user-dashboard.component';
 import { ProfileComponent } from './Pages/User/profile/profile.component';
+import { UploadComponent } from './upload/upload.component';
 import { AddPostComponent } from './Pages/Post/add-post/add-post.component';
+import { AllPostsComponent } from './Pages/Post/all-posts/all-posts.component';
 
 export const routes: Routes = [
-    { path: '', component: LoginComponent },
     { path: 'about', component: AboutComponent },
     { path: 'contact', component: ContactComponent },
     {path:'register',component:RegisterComponent},
-    {path:'add-post',component:AddPostComponent},
     {path:'login',component:LoginComponent},
+    {path:'upload',component:UploadComponent},
+    {path:'add-post',component:AddPostComponent},
+    {path:'all-posts',component:AllPostsComponent},
     {path:'user-dashboard',component:UserDashboardComponent,
     children: [
       {path:'edit-user/:uid',component:EditUserComponent},

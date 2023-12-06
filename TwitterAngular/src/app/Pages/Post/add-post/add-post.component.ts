@@ -1,65 +1,43 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { PostWithoutIdDTO } from '../../../Models/Post/post-without-id-dto';
+import { UploadImgComponent } from '../upload-img/upload-img.component';
+import { RouterOutlet,Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-post',
   standalone: true,
-  imports: [CommonModule,FormsModule,HttpClientModule],
+  imports: [CommonModule,HttpClientModule,FormsModule,UploadImgComponent,RouterOutlet],
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.css'
 })
 export class AddPostComponent {
-  imageUrl?: SafeResourceUrl;
-
-  constructor(private sanitizer: DomSanitizer) {}
-
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.saveImage(file);
+  post:PostWithoutIdDTO;
+  create:boolean;
+  response: any;
+  msg?:string='';
+  constructor(private http:HttpClient,private router:Router){
+    this.post=new PostWithoutIdDTO;
+    this.response={dbPath: ''};
+    this.create=false;
+  }
+  uploadFinished = (event: any) => { 
+      this.response = event; 
+      this.post.img=this.response.dbPath;
     }
-  }
-
-  private saveImage(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const base64Data = e.target.result.split(',')[1];
-  
-      // Save the file to the src/assets/uploads folder (for development purposes)
-      const filePath = `src/assets/uploads/${file.name}`;
-      this.saveFileToFileSystem(base64Data, filePath);
-  
-      // Display the image
-      const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(`assets/uploads/${file.name}`);
-      this.imageUrl = safeUrl;
-  
-      // Note: In a real application, you would typically upload the file to a server here.
-    };
-    reader.readAsDataURL(file);
-  }
-
-  private saveFileToFileSystem(data: string, path: string): void {
-    const fs = require('fs');
-    const base64Data = data.replace(/^data:image\/\w+;base64,/, '');
-    const binaryData = Buffer.from(base64Data, 'base64');
-  
-    fs.writeFileSync(path, binaryData, 'binary');
-  }
-
-  private dataURItoBlob(dataURI: string): Blob {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const uint8Array = new Uint8Array(arrayBuffer);
-
-    for (let i = 0; i < byteString.length; i++) {
-      uint8Array[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([arrayBuffer], { type: mimeString });
+ 
+   onSubmit(): void {
+    console.log(this.post);
+      this.http.post('http://localhost:5250/api/Post/AddPost', this.post)
+      .subscribe(response => {
+        console.log('Post created successfully', response);
+        this.msg='Post created successfully';
+        this.router.navigateByUrl('all-posts');
+      }, error => {
+        console.error('Error creating post', error);
+        this.msg='Error creating post';
+      });
   }
 }

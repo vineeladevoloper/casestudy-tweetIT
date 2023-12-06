@@ -16,30 +16,34 @@ namespace MyTwitterAPI.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostService postService;
+        private readonly IUserService userService;
         private readonly IMapper _mapper;
         private readonly ILog _logger;
 
-        public PostController(IPostService postService, IMapper mapper, ILog logger)
+        public PostController(IPostService postService,IUserService userService, IMapper mapper, ILog logger)
         {
             this.postService = postService;
+            this.userService= userService;
             this._mapper = mapper;
             this._logger = logger;
         }
         [HttpPost, Route("AddPost")]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public IActionResult AddPost(PostWithoutIdDTO postdto)
         {
             Post post=_mapper.Map<Post>(postdto);
+            //Console.WriteLine(postdto.UserId);
+            post.User = userService.GetUserById(postdto.UserId);
             post.DateandTime = DateTime.Now;
             post.ValidatedorBlocked = null;
             post.ActionDoneById = null;
             post.ActionDOneUser = null;
-
+            //Console.WriteLine(post.User.UserName);
             postService.AddPost(post);
             return StatusCode(200, post);
         }
         [HttpGet,Route("GetAllPosts")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult GetAllPost() 
         {
             try
@@ -55,7 +59,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("GetPostById/{postId}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult GetPostById(int postId)
         {
             try
@@ -71,7 +75,7 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpPut,Route("EditPost")]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public IActionResult EditPost(PostDTO postdto)
         {
             try
@@ -93,7 +97,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpDelete,Route("DeletePost/{PostId}")]
-        [AllowAnonymous]
+       // [AllowAnonymous]
         public IActionResult DeletePost(int PostId) 
         {
             try
@@ -116,7 +120,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("GetPostByYear/{year}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult GetPostByYear(int year)
         {
             try

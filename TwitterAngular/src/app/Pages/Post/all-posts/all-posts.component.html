@@ -1,0 +1,16 @@
+<div class="container">
+    <h2 class="mt-4 mb-4">Posts List</h2>
+    <div class="row">
+      <div *ngFor="let post of posts" class="col-md-6 mb-4">
+        <div class="card">
+          <img [src]="createImgPath(post.img)" alt="Post Image" class="card-img-top small-image">
+          <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <p class="card-text">{{ post.description }}</p>
+            <p class="card-text">{{ post.userId }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

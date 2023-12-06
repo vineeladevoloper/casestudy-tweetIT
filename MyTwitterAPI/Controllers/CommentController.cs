@@ -24,7 +24,7 @@ namespace MyTwitterAPI.Controllers
             this._logger = logger;
         }
         [HttpPost, Route("AddComment")]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public IActionResult AddComment(CommentWithoutIdDTO commentdto)
         {
             Comment comment = _mapper.Map<Comment>(commentdto);
@@ -53,7 +53,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("GetCommentById/{commentId}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult GetCommentById(int commentId)
         {
             try
@@ -69,7 +69,7 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpPut, Route("EditComment")]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public IActionResult EditComment(CommentDTO commentdto)
         {
             try
@@ -91,7 +91,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpDelete, Route("DeleteComment/{CommentId}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult DeleteComment(int CommentId)
         {
             try

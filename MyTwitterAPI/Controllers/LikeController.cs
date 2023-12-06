@@ -24,7 +24,7 @@ namespace MyTwitterAPI.Controllers
             this._logger = logger;
         }
         [HttpPost, Route("AddLike")]
-        [Authorize(Roles = "User")]
+       // [Authorize(Roles = "User")]
         public IActionResult AddLike(LikeWithoutIdDTO likedto)
         {
             Like like = _mapper.Map<Like>(likedto);
@@ -35,7 +35,7 @@ namespace MyTwitterAPI.Controllers
             return StatusCode(200, like);
         }
         [HttpGet, Route("GetAlllike")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult GetAllLike()
         {
             try
@@ -51,7 +51,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("GetLikeById/{likeId}")]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult GetLikeById(int likeId)
         {
             try
@@ -67,7 +67,7 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpDelete, Route("DeleteLike/{LikeId}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult DeleteLike(int LikeId)
         {
             try
