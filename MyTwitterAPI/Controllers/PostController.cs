@@ -40,7 +40,8 @@ namespace MyTwitterAPI.Controllers
             post.ActionDOneUser = null;
             //Console.WriteLine(post.User.UserName);
             postService.AddPost(post);
-            return StatusCode(200, post);
+            PostDTO postnew=_mapper.Map<PostDTO>(post);
+            return StatusCode(200, postnew);
         }
         [HttpGet,Route("GetAllPosts")]
         //[AllowAnonymous]
@@ -65,7 +66,8 @@ namespace MyTwitterAPI.Controllers
             try
             {
                 Post post = postService.GetPostById(postId);
-                return StatusCode(200, post);
+                PostDTO postdto = _mapper.Map<PostDTO>(post);
+                return StatusCode(200, postdto);
             }
             catch (Exception ex)
             {
