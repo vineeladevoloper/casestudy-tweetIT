@@ -14,10 +14,12 @@ import { CommonModule } from '@angular/common';
 export class ProfileComponent {
   user:UserDTO;
   userId?:string;
+  role?:any;
   errMsg: string = '';
   isUserExist: boolean = false;
   constructor(private activateRoute:ActivatedRoute,private http:HttpClient){
     this.user=new UserDTO();
+    this.role=localStorage.getItem('role');
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     console.log(this.userId);
     this.search();

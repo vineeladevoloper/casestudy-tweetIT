@@ -7,6 +7,7 @@ using MyTwitterAPI.Entities;
 using MyTwitterAPI.Model;
 using System.ComponentModel.Design;
 using System.Xml.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace MyTwitterAPI.Services
 {
@@ -90,11 +91,22 @@ namespace MyTwitterAPI.Services
             }
         }
 
-        public List<Comment> GetAllComment()
+        public List<CommentDTO> GetAllComment()
         {
             try
             {
-                return context.Comments.ToList();
+                List<Comment> comments = context.Comments.ToList();
+                List<CommentDTO> commentDTOs = _mapper.Map<List<CommentDTO>>(comments);
+
+                foreach (var commentDto in commentDTOs)
+                {
+                    var name = context.Users.SingleOrDefault(u => u.UserId == commentDto.UserId);
+                    var post = context.Posts.SingleOrDefault(p=> p.PostId == commentDto.PostId);
+                    commentDto.User = name.UserName;
+                    commentDto.Post = post.Title;
+
+                }
+                return commentDTOs;
             }
             catch (Exception)
             {
@@ -103,11 +115,44 @@ namespace MyTwitterAPI.Services
             }
         }
 
-        public Comment GetCommentById(int CommentId)
+        public List<CommentDTO> GetAllCommentsForPost(int postId)
         {
             try
             {
-                return context.Comments.SingleOrDefault(c => c.CommentId == CommentId);
+                List<Comment> commentsForPost = context.Comments
+                    .Where(c => c.PostId == postId)
+                    .ToList();
+
+                List<CommentDTO> commentDTOsForPost = _mapper.Map<List<CommentDTO>>(commentsForPost);
+
+                foreach (var commentDto in commentDTOsForPost)
+                {
+                    var name = context.Users.SingleOrDefault(u => u.UserId == commentDto.UserId);
+                    var post = context.Posts.SingleOrDefault(p => p.PostId == commentDto.PostId);
+                    commentDto.User = name.UserName;
+                    commentDto.Post = post.Title;
+                }
+
+                return commentDTOsForPost;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public CommentDTO GetCommentById(int CommentId)
+        {
+            try
+            {
+                Comment comment= context.Comments.SingleOrDefault(c => c.CommentId == CommentId);
+                CommentDTO commentDTO = _mapper.Map<CommentDTO>(comment);
+                var name = context.Users.SingleOrDefault(u => u.UserId == comment.UserId);
+                var post = context.Posts.SingleOrDefault(p => p.PostId == comment.PostId);
+                commentDTO.User = name.UserName;
+                commentDTO.Post = post.Title;
+                return commentDTO;
             }
             catch (Exception)
             {

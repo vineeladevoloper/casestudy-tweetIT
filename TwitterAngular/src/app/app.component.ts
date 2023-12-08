@@ -12,13 +12,6 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   title = 'Tweet IT';
-  constructor(private router:Router){
-  }
-  contact(){
-    this.router.navigateByUrl('contact');
-  }
-  about(){
-    this.router.navigateByUrl('about');
-  }
+
   
 }

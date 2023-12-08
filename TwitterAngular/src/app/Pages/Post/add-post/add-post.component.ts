@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { PostWithoutIdDTO } from '../../../Models/Post/post-without-id-dto';
 import { UploadImgComponent } from '../upload-img/upload-img.component';
 import { RouterOutlet,Router ,ActivatedRoute} from '@angular/router';
+import { UserDTO } from '../../../Models/User/user-dto';
 
 @Component({
   selector: 'app-add-post',
@@ -37,7 +38,7 @@ export class AddPostComponent {
       .subscribe(response => {
         console.log('Post created successfully', response);
         this.msg='Post created successfully';
-        this.router.navigateByUrl('all-posts');
+        this.router.navigateByUrl('user-dashboard/all-posts');
       }, error => {
         console.error('Error creating post', error);
         this.msg='Error creating post';

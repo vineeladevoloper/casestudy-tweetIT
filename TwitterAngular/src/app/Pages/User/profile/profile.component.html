@@ -9,10 +9,11 @@
           <div class="card-body">
             <ul class="list-group">
               <li class="list-group-item"><strong>User ID:</strong>  {{user.userId}}</li>
-              <li class="list-group-item"><strong>User Name:</strong> {{user.userName}}</li>
+              <li class="list-group-item"><strong>User Name:</strong> {{user.userName}}<span *ngIf="user.userType=='Verified'" class="verified">✔</span></li>
               <li class="list-group-item"><strong>Role:</strong> {{user.role}}</li>
               <li class="list-group-item"><strong>User Email:</strong> {{user.userEmail}}</li>
               <li class="list-group-item"><strong>User Type:</strong> {{user.userType}}</li>
+              <li *ngIf="role === 'User'" class="list-group-item"><strong>Status for Upgrade:</strong> {{user.status}}</li>
             </ul>
           </div>
         </div>

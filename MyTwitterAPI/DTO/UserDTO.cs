@@ -9,6 +9,7 @@
 
         public string? UserEmail { get; set; }
         public string? UserType { get; set; }
+        public string? Status { get; set;}
 
     }
 }

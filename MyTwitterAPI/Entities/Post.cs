@@ -15,6 +15,7 @@ namespace MyTwitterAPI.Entities
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? Img { get; set; }
+        public int Active { get; set; } = 1;
         public DateTime DateandTime { get; set; }
         public string? ValidatedorBlocked { get; set; }
         public string? ActionDoneById { get; set; }

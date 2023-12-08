@@ -1,0 +1,48 @@
+<div class="card border-dark">
+    <img [src]="createImgPath(post.img)" alt="Post Image" class="card-img-top custom-image img-thumbnail">
+  
+    <div class="card-body">
+      <h5 class="card-title font-weight-bold">{{ post.title }}</h5>
+      <p class="card-text">{{ post.description }}</p>
+        <p class="card-text"><strong>User Name:</strong> {{ post.user }}
+          <span *ngIf="post.userType=='Verified'" class="verified">✔</span>
+        </p>
+       <p class="card-text"><strong>Date and Time:</strong> {{ post.dateandTime | date:'yyyy-MM-dd HH:mm' }}</p>
+
+      </div>
+    </div>
+    <div class="comment-container" *ngIf="showComments">
+      
+
+     <form *ngIf="role=='User'" (ngSubmit)="addComment()" #commentForm="ngForm">
+       <div class="form-group">
+         <label for="commentText">Add Comment:</label>
+         <textarea id="commentText" name="commentText" class="form-control" [(ngModel)]="newCommentText" required></textarea>
+       </div>
+       <button type="submit" class="btn btn-primary">Submit Comment</button>
+     </form>
+
+   <div *ngFor="let comment of comments">
+     <p><strong>{{ comment.user }} 
+    </strong>: {{ comment.commentText }}  ->>  {{ comment.dateandTime|date }}</p>
+   </div>
+   
+   </div>
+
+
+   <div class="comment-container" *ngIf="showLikes">
+    <button *ngIf="role=='User'" type="submit" class="btn btn-primary" (click)="addLike()">
+      {{ likeStatus ? 'Remove Like' : 'Add Like' }}
+    </button>
+
+      <div *ngFor="let like of likes">
+        <p><strong>{{ like.user }} 
+        </strong>  ->>  {{ like.dateTime|date }}</p>
+      </div>
+    </div>
+
+   <button class="btn btn-link" (click)="toggleComments()">{{ showComments ? 'Hide Comments' : 'Show Comments' }}</button>
+   <button class="btn btn-link" (click)="toggleLikes()">{{ showLikes ? 'Hide Likes' : 'Show Likes' }}</button>
+  
+
+  

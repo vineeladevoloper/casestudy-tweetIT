@@ -28,6 +28,7 @@ export class UserDashboardComponent {
   logout(){
     localStorage.removeItem('userId');
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.router.navigateByUrl('login');
   }
 }

@@ -15,10 +15,10 @@ import { FormsModule } from '@angular/forms';
 })
 export class ListUserComponent {
   users:UserDTO[]=[];
-  searchflag:boolean;
   action:AdminAction;
   adminId:any;
   errmsg:string='';
+  searchTerm?:string='';
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -31,7 +31,6 @@ export class ListUserComponent {
   constructor(private http:  HttpClient,private router:Router){
     this.user=new UserDTO();
     this.action=new AdminAction();
-    this.searchflag=false;
     this.getAllUsers();
     }
   getAllUsers(){
@@ -39,23 +38,17 @@ export class ListUserComponent {
     .get<UserDTO[]>('http://localhost:5250/api/User/GetAllUsers',this.httpOptions)
     .subscribe((response)=>{
       this.users=response;
+      this.users = this.users.filter(user => user.role !== 'Admin');
       console.log(this.users);
       console.log(this.searchUserId);
     })
   }
 
-  upgradefn(userID:any){
-    this.adminId=localStorage.getItem('userId');
-    this.action.adminUserId=this.adminId;
-    this.action.userIdTo=userID;
-    console.log(this.action);
-    this.http.post('http://localhost:5250/api/User/UpgradeUser',this.action,this.httpOptions)
-    .subscribe((response)=>{
-      console.log(response);
-      this.getAllUsers();
-    })
+  postByUser(userID:any){
+    this.router.navigateByUrl('admin-dashboard/post-by-user/'+userID)
   }
-  blockfn(userID:any){
+
+ blockfn(userID:any){
     this.adminId=localStorage.getItem('userId');
     this.action.adminUserId=this.adminId;
     this.action.userIdTo=userID;
@@ -66,23 +59,18 @@ export class ListUserComponent {
       this.getAllUsers();
     })
   }
-  applySearchFilter() {
-    console.log("In search");
-    console.log(this.searchUserId);
-    this.http
-    .get<UserDTO>('http://localhost:5250/api/User/GetUserById/'+this.searchUserId,this.httpOptions)
-    .subscribe((response)=>{
-      console.log(response)
-      if(response==null){
-        this.errmsg="User not found";
-        console.log(this.errmsg);
-        this.searchflag=false;
-      }
-      else{
-        this.user=response;
-        this.errmsg='';
-        this.searchflag=true;
-      }
-    })
+  onSearch(){
+    console.log(this.searchTerm);
+    if(this.searchTerm==''){
+      this.getAllUsers();
+    }
+    else{
+      this.http
+      .get<UserDTO[]>('http://localhost:5250/api/User/GetUsersByName/'+this.searchTerm)
+      .subscribe((response)=>{
+        this.users=response;
+        console.log(this.users);
+      })
+    }
   }
 }

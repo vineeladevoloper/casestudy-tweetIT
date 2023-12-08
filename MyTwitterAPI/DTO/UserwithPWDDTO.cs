@@ -11,5 +11,6 @@
 
         public string? Password { get; set; }
         public string? UserType { get; set; }
+        public string? Status { get; set; }
     }
 }

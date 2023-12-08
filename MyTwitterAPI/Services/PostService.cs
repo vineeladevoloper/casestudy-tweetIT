@@ -34,14 +34,18 @@ namespace MyTwitterAPI.Services
         {
             try
             {
-                var postWithUser = context.Posts.Where(p => p.PostId == postId)
+                Post postWithUser = context.Posts.Where(p => p.PostId == postId)
                 .Include(p => p.User).SingleOrDefault();
                 if (postWithUser == null)
                 {
                     return null;
                 }
                 PostDTO newpost = _mapper.Map<PostDTO>(postWithUser);
-                newpost.UserName = postWithUser.User?.UserName;
+                var name = context.Users.SingleOrDefault(u => u.UserId == newpost.UserId);
+                newpost.User = name.UserName;
+                newpost.UserType = name.UserType;
+
+   
                 return newpost;
             }
             catch (Exception)
@@ -56,18 +60,22 @@ namespace MyTwitterAPI.Services
             {
                 Console.WriteLine(searchTerm);
                 Console.WriteLine(userId);
-                List<Post> matchingPosts = context.Posts
+
+                List<Post> activeMatchingPosts = context.Posts
                     .Include(p => p.User)
-                    .Where(p => p.UserId == userId && EF.Functions.Like(p.Title, $"%{searchTerm}%"))
+                    .Where(p => p.UserId == userId &&
+                                EF.Functions.Like(p.Title, $"%{searchTerm}%") &&
+                                p.Active == 1)
                     .ToList();
 
-                List<PostDTO> matchingPostDTOs = _mapper.Map<List<PostDTO>>(matchingPosts);
+                List<PostDTO> matchingPostDTOs = _mapper.Map<List<PostDTO>>(activeMatchingPosts);
 
                 foreach (var postDTO in matchingPostDTOs)
                 {
                     Console.WriteLine(postDTO.PostId);
                     var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
-                    postDTO.UserName = name.UserName;
+                    postDTO.User = name.UserName;
+                    postDTO.UserType = name.UserType;
                 }
 
                 return matchingPostDTOs;
@@ -77,47 +85,49 @@ namespace MyTwitterAPI.Services
                 throw;
             }
         }
-
 
         public List<PostDTO> SearchPostsByTitle(string searchTerm)
         {
             try
             {
-                List<Post> matchingPosts = context.Posts
-            .Include(p => p.User)
-            .Where(p => EF.Functions.Like(p.Title, $"%{searchTerm}%"))
-            .ToList();
+                List<Post> activeMatchingPosts = context.Posts.Include(p => p.User)
+                    .Where(p => p.Active == 1 &&
+                                EF.Functions.Like(p.Title, $"%{searchTerm}%") &&
+                                p.User.UserType != "Blocked")
+                    .ToList();
 
-                List<PostDTO> matchingPostDTOs = _mapper.Map<List<PostDTO>>(matchingPosts);
-
+                List<PostDTO> matchingPostDTOs = _mapper.Map<List<PostDTO>>(activeMatchingPosts);
                 foreach (var postDTO in matchingPostDTOs)
                 {
+                    Console.WriteLine(postDTO.PostId);
                     var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
-                    postDTO.UserName = name.UserName;
+                    postDTO.User = name.UserName;
+                    postDTO.UserType= name.UserType;
                 }
-
                 return matchingPostDTOs;
             }
             catch (Exception)
             {
                 throw;
             }
+
         }
         public List<PostDTO> GetPostsByUserId(string userId)
         {
             try
             {
-                List<Post> userPosts = context.Posts
+                List<Post> activeUserPosts = context.Posts
                     .Include(p => p.User)
-                    .Where(p => p.UserId == userId)
+                    .Where(p => p.UserId == userId && p.Active == 1) // Filter out only active posts for the specific user
                     .ToList();
 
-                List<PostDTO> userPostDTOs = _mapper.Map<List<PostDTO>>(userPosts);
+                List<PostDTO> userPostDTOs = _mapper.Map<List<PostDTO>>(activeUserPosts);
 
                 foreach (var postDTO in userPostDTOs)
                 {
                     var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
-                    postDTO.UserName = name.UserName;
+                    postDTO.User = name.UserName;
+                    postDTO.UserType = name.UserType;
                 }
 
                 return userPostDTOs;
@@ -126,27 +136,34 @@ namespace MyTwitterAPI.Services
             {
                 throw;
             }
+
         }
-                
+
         public List<PostDTO> GetAllPost()
         {
             try
             {
-                List<Post> postsWithUserDetails = context.Posts.Include(p => p.User).ToList();
-                List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(postsWithUserDetails);
+                List<Post> activePostsWithUserDetails = context.Posts.Include(p => p.User)
+            .Where(p => p.Active == 1) // Filter out only active posts
+            .ToList();
+
+                List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(activePostsWithUserDetails
+                    .Where(p => p.User.UserType != "Blocked")); // Replace "Blocked" with the actual value for a blocked user
+
                 foreach (var postDTO in postDTOs)
                 {
                     var name = context.Users.SingleOrDefault(u => u.UserId == postDTO.UserId);
-                    postDTO.UserName = name.UserName;
+                    postDTO.User = name.UserName;
+                    postDTO.UserType= name.UserType;
                 }
 
                 return postDTOs;
             }
             catch (Exception)
             {
-
                 throw;
             }
+
         }
         public ResultModel DeletePost(int postId)
         {
@@ -156,7 +173,7 @@ namespace MyTwitterAPI.Services
 
                 if (post != null)
                 {
-                    context.Posts.Remove(post);
+                    post.Active = 0; // Marking the post as inactive
                     context.SaveChanges();
 
                     return new ResultModel { Success = true, Message = "Post deleted successfully." };
@@ -171,6 +188,7 @@ namespace MyTwitterAPI.Services
                 return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
             }
         }
+
         public ResultModel EditPost(PostDTO postdto)
         {
             try

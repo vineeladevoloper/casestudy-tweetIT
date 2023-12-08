@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div *ngIf="user.userType === 'Blocked'; else notBlocked">
       <h5>Welcome {{user.userName}}!</h5>
-      <p>You are blocked and can't access anything.</p>
+            <p>You are blocked and can't access anything.</p>
       <button class="btn btn-primary float-right" (click)="logout()">Log out</button>
     </div>
     
@@ -10,7 +10,7 @@
         <!-- Left Pane -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
           <p>Dashboard</p>
-          <p>Welcome {{user.userName}}!</p>
+          <p>Welcome {{user.userName}}!<span *ngIf="user.userType=='Verified'" class="verified">✔</span></p>
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
@@ -26,15 +26,18 @@
                 <a class="nav-link" [routerLink]="'add-post/' + user.userId">Add Post</a>
               </li>       
               <li class="nav-item">
-                <a class="nav-link" [routerLink]="'post-by-user/' + user.userId">My Post</a>
+                <a class="nav-link" [routerLink]="'post-by-user/' + user.userId">My Posts</a>
               </li> 
+              <li class="nav-item">
+                <button class="btn btn-primary " (click)="logout()">Log out</button>
+              </li>
             </ul>
           </div>
         </nav>
     
         <!-- Right Pane -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-          <button class="btn btn-primary float-right" (click)="logout()">Log out</button>
+          
           <router-outlet></router-outlet>
         </main>
       </div>

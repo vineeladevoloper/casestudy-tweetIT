@@ -21,6 +21,7 @@ namespace MyTwitterAPI.Entities
         [StringLength(15)]
         public string? Password { get; set; }
         public string? UserType { get; set; }
+        public string? Status { get; set; }
         public string? ActionById { get; set; }
         [ForeignKey("ActionById")]
         public User? ActionDoneUser { get; set; }

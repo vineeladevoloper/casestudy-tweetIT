@@ -5,4 +5,5 @@ export class UserDTO {
     public userEmail?:string;
     public password?:string;
     public userType?:string;
+    public status?:string;
 }

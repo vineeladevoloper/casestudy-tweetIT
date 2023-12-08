@@ -19,19 +19,31 @@ namespace MyTwitterAPI.Services
             this._mapper = mapper;
         }
 
-        public void AddLike(Like like)
+        public LikeDTO AddLike(Like like)
         {
             try
             {
                 context.Likes.Add(like);
                 context.SaveChanges();
+
+                // Retrieve the added Like entity with any additional details
+                Like addedLike = context.Likes.Single(l => l.LikeId == like.LikeId);
+
+                // Map the added Like entity to a LikeDTO
+                LikeDTO likeDTO = _mapper.Map<LikeDTO>(addedLike);
+
+                // Optionally, fetch additional details for the user
+                var user = context.Users.SingleOrDefault(u => u.UserId == likeDTO.UserId);
+                likeDTO.User = user?.UserName;
+
+                return likeDTO;
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
 
         public ResultModel DeleteLike(int LikeId)
         {
@@ -57,6 +69,31 @@ namespace MyTwitterAPI.Services
             }
         }
 
+        public ResultModel DeleteLikeByUserPost(int postId, string userId)
+        {
+            try
+            {
+                Like like = context.Likes.SingleOrDefault(l => l.PostId == postId && l.UserId == userId);
+
+                if (like != null)
+                {
+                    context.Likes.Remove(like);
+                    context.SaveChanges();
+
+                    return new ResultModel { Success = true, Message = "Like deleted successfully." };
+                }
+                else
+                {
+                    return new ResultModel { Success = false, Message = "Like not found." };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
+            }
+        }
+
+
         public List<Like> GetAllLike()
         {
             try
@@ -79,6 +116,50 @@ namespace MyTwitterAPI.Services
             catch (Exception)
             {
 
+                throw;
+            }
+        }
+
+        public ResultModel GetLikeByPostAndUser(int postId, string userId)
+        {
+            try
+            {
+                Like like= context.Likes.SingleOrDefault(l => l.PostId == postId && l.UserId == userId);
+                if(like != null)
+                {
+                    LikeDTO likedto = _mapper.Map<LikeDTO>(like);
+                    var name = context.Users.SingleOrDefault(u => u.UserId == likedto.UserId);
+                    likedto.User = name.UserName;
+                    return new ResultModel { Success = true, Message = "Like found." };
+                }
+                else
+                {
+                    return new ResultModel { Success = true, Message = "Like not found." };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
+            }
+        }
+
+        public List<LikeDTO> GetLikesByPost(int postId)
+        {
+            try
+            {
+
+                List<Like> likes = context.Likes.Where(l => l.PostId == postId).ToList();
+                List<LikeDTO> likeDTOs = _mapper.Map<List<LikeDTO>>(likes);
+
+                foreach (var likeDTO in likeDTOs)
+                {
+                    var user = context.Users.SingleOrDefault(u => u.UserId == likeDTO.UserId);
+                    likeDTO.User = user?.UserName;
+                }
+                return likeDTOs;
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }

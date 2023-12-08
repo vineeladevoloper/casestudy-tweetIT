@@ -1,0 +1,49 @@
+<div class="container">
+    <table class="table">
+       <tr>
+           <td>Post Id</td>
+           <td>
+               <input type="text" [(ngModel)]="post.postId" readonly class="form-control">
+           </td>
+       </tr>
+       <tr>
+           <td>User Name</td>
+           <td>
+               <input type="text" [(ngModel)]="post.user" readonly class="form-control">
+           </td>
+       </tr>
+       <tr>
+        <td>Title</td>
+        <td>
+            <input type="text" [(ngModel)]="post.title" class="form-control">
+        </td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>
+            <input type="text" [(ngModel)]="post.description" class="form-control">
+        </td>
+    </tr>
+    <tr>
+        <td>Date and Time</td>
+        <td>
+            <p>{{ post.dateandTime | date:'dd-MM-yyyy HH:mm:ss' }}</p>
+        </td>
+    </tr>
+    <tr>
+        <td>Image</td>
+        <td>
+            <div class="mb-3">
+                <app-upload-img (onUploadFinished)="uploadFinished($event)"></app-upload-img>
+              </div>
+        </td>
+    </tr>
+       <tr>
+           <td colspan="2">
+               <button class="btn btn-primary" (click)="edit()">Edit</button> &nbsp;
+           </td>
+       </tr>
+       
+
+   </table>
+</div>

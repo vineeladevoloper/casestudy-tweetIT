@@ -18,6 +18,12 @@
                 <input type="text" [(ngModel)]="user.role" readonly class="form-control">
             </td>
         </tr>
+        <tr *ngIf="role === 'User'">
+            <td>User Type</td>
+            <td>
+                <input type="text" [(ngModel)]="user.userType" readonly class="form-control">
+            </td>
+        </tr>
         <tr>
             <td>User Email</td>
             <td>
@@ -31,7 +37,15 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2">
+            <td>Staus</td>
+            <td>
+                <input type="text" [(ngModel)]="user.status" readonly class="form-control">
+                
+            </td>
+            <button class="btn btn-primary" (click)="upgrade(user.userId)" *ngIf="role === 'User' && (user.status!='Requested' && user.status!='Upgraded')">Upgrade Request</button>
+        </tr>
+        <tr>
+                <td colspan="2">
                 <button class="btn btn-primary" (click)="edit()">Edit</button> &nbsp;
             </td>
         </tr>

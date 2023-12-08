@@ -66,6 +66,46 @@ namespace MyTwitterAPI.Controllers
             }
         }
 
+        [HttpGet, Route("GetLikeByPostAndUser/{postId}/{userId}")]
+        //[AllowAnonymous]
+        public IActionResult GetLikeByPostAndUser(int postId, string userId)
+        {
+            try
+            {
+                var result = likeService.GetLikeByPostAndUser(postId, userId);
+                if (result.Success)
+                {
+                    return StatusCode(200, result.Message);
+                }
+                else
+                {
+                    return StatusCode(400, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(400, ex.Message);
+            }
+
+        }
+
+        [HttpGet, Route("GetLikesByPost/{postId}")]
+        //[AllowAnonymous]
+        public IActionResult GetLikesByPost(int postId)
+        {
+            try
+            {
+                List<LikeDTO> like = likeService.GetLikesByPost(postId);
+                return StatusCode(200, like);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(400, ex.Message);
+            }
+        }
+
         [HttpDelete, Route("DeleteLike/{LikeId}")]
        // [Authorize(Roles = "Admin")]
         public IActionResult DeleteLike(int LikeId)
@@ -73,6 +113,28 @@ namespace MyTwitterAPI.Controllers
             try
             {
                 var result = likeService.DeleteLike(LikeId);
+                if (result.Success)
+                {
+                    return StatusCode(200, result.Message);
+                }
+                else
+                {
+                    return StatusCode(400, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(400, ex.Message);
+            }
+        }
+        [HttpDelete, Route("DeleteLikeByUserPost/{postId}/{userId}")]
+        // [Authorize(Roles = "Admin")]
+        public IActionResult DeleteLikeByUserPost(int postId, string userId)
+        {
+            try
+            {
+                var result = likeService.DeleteLikeByUserPost(postId,userId);
                 if (result.Success)
                 {
                     return StatusCode(200, result.Message);

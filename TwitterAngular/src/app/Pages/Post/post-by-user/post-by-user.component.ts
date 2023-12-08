@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PostWithId } from '../../../Models/Post/post-with-id';
 import { Router ,ActivatedRoute} from '@angular/router';
+import { UserDTO } from '../../../Models/User/user-dto';
 
 @Component({
   selector: 'app-post-by-user',
@@ -17,9 +18,13 @@ export class PostByUserComponent {
   userId?:string;
   post:PostWithId;
   searchTerm?:string='';
-  constructor(private http:HttpClient,private activateRoute: ActivatedRoute){
+  user:UserDTO;
+  role:any;
+  constructor(private http:HttpClient,private activateRoute: ActivatedRoute,private router:Router){
     this.post=new PostWithId();
+    this.user=new UserDTO();
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
+    this.role=localStorage.getItem('role');
     this.getPosts();
   }
   onSearch(): void {
@@ -47,5 +52,19 @@ export class PostByUserComponent {
   public createImgPath = (url: any) => { 
         return `http://localhost:5250/${url}`;
       }
+
+  edit(postId:any){
+console.log(postId);
+this.router.navigateByUrl('user-dashboard/edit-post/'+postId);
+  }
+  delete(postId:any){
+    console.log(postId);
+    this.http
+      .delete('http://localhost:5250/api/Post/DeletePost/'+postId)
+      .subscribe((response)=>{
+        console.log(response);
+      })
+    this.router.navigateByUrl('user-dashboard/all-posts');
+  }
 
 }

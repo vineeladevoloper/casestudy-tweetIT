@@ -8,12 +8,14 @@ namespace MyTwitterAPI.Services
     {
         List<User> GetAllUsers();
         User GetUserById(string userid);
-        User GetUserByEmail(string email);
+        List<User> GetUsersByName(string searchTerm);
         ResultModel AddUser(User user);
         ResultModel DeleteUser(string userid);
         ResultModel EditUser(UserwithPWDDTO userdto);
         User ValidteUser(string email, string password);
-        ResultModel UpgradeUser(string userId, string adminId);
+        ResultModel UpgradeUserRequest(string userId, string adminId);
+        ResultModel RejectUserRequest(string userId, string adminId);
         ResultModel BlockUser(string userId, string adminId);
+        void UpgradeRequest(string userId);
     }
 }

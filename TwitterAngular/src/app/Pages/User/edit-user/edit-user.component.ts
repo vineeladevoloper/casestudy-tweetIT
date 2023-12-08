@@ -16,10 +16,12 @@ import { HttpClient } from '@angular/common/http';
 export class EditUserComponent {
   user:UserDTO;
   userId?:string;
+  role?:any;
   errMsg: string = '';
   isUserExist: boolean = false;
   constructor(private router:Router,private activateRoute: ActivatedRoute,private http:HttpClient){
     this.user=new UserDTO();
+    this.role=localStorage.getItem('role');
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     console.log(this.userId);
     this.search();
@@ -47,7 +49,20 @@ export class EditUserComponent {
       .subscribe((response) => {
         console.log(response);
       });
-    this.router.navigateByUrl('list-users');
+    if(localStorage.getItem('role')=="User"){
+      this.router.navigateByUrl('user-dashboard');
+    }
+    else{
+      this.router.navigateByUrl('admin-dashboard');
+    }
+  }
+  upgrade(userId:any){
+    this.http
+      .put('http://localhost:5250/api/User/UpgradeRequest/'+ userId,userId)
+      .subscribe((response) => {
+        this.search();
+        console.log(response);
+      });
   }
   
 }

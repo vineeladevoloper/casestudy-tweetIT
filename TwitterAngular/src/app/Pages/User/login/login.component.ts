@@ -22,6 +22,13 @@ export class LoginComponent {
     this.login=new Login();
   }
     
+  contact(){
+    this.router.navigateByUrl('contact');
+  }
+  about(){
+    this.router.navigateByUrl('about');
+  }
+
   onSubmit(): void {
     this.http.post('http://localhost:5250/api/User/Validate',this.login)
     .subscribe((response)=>{
@@ -30,6 +37,7 @@ export class LoginComponent {
         if (this.httpResponse.token != null) {
           localStorage.setItem('token', this.httpResponse.token);
           localStorage.setItem('userId',this.httpResponse.userId);
+          localStorage.setItem('role',this.httpResponse.role);
           if (this.httpResponse.role == 'Admin') 
           {
             this.router.navigateByUrl('admin-dashboard');

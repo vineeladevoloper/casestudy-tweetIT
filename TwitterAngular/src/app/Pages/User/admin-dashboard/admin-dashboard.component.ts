@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { UserDTO } from '../../../Models/User/user-dto';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 export class AdminDashboardComponent {
   admin:UserDTO;
   adminId:any;
-  constructor(private http:HttpClient,private router:Router){
+  constructor(private http:HttpClient,private router:Router,private route: ActivatedRoute){
       this.admin=new UserDTO();
       this.adminId=localStorage.getItem('userId');
       console.log(this.adminId);
@@ -26,9 +26,15 @@ export class AdminDashboardComponent {
         console.log(this.admin);
       })
   }
+
+  shouldDisplayImage(): boolean {
+    // Check if the current route is AdminDashboardComponent
+    return this.route.snapshot.routeConfig?.path === 'admin-dashboard';
+  }
   logout(){
     localStorage.removeItem('userId');
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
     this.router.navigateByUrl('login');
   }
 }

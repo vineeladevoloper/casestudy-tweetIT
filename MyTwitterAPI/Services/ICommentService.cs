@@ -7,8 +7,9 @@ namespace MyTwitterAPI.Services
     public interface ICommentService
     {
         void AddComment(Comment Comment);
-        List<Comment> GetAllComment();
-        Comment GetCommentById(int CommentId);
+        List<CommentDTO> GetAllComment();
+        CommentDTO GetCommentById(int CommentId);
+        List<CommentDTO> GetAllCommentsForPost(int postId);
         ResultModel EditComment(CommentDTO commentdto);
         ResultModel DeleteComment(int CommentId);
     }

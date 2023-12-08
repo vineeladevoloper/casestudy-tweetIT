@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyTwitterAPI.DTO;
 using MyTwitterAPI.Entities;
 using MyTwitterAPI.Services;
+using System.Xml.Linq;
 
 namespace MyTwitterAPI.Controllers
 {
@@ -42,9 +43,9 @@ namespace MyTwitterAPI.Controllers
         {
             try
             {
-                List<Comment> comments = commentService.GetAllComment();
-                List<CommentDTO> commentDTOs = _mapper.Map<List<CommentDTO>>(comments);
-                return StatusCode(200, commentDTOs);
+                List<CommentDTO> comments = commentService.GetAllComment();
+               // List<CommentDTO> commentDTOs = _mapper.Map<List<CommentDTO>>(comments);
+                return StatusCode(200, comments);
             }
             catch (Exception ex)
             {
@@ -58,7 +59,7 @@ namespace MyTwitterAPI.Controllers
         {
             try
             {
-                Comment comment = commentService.GetCommentById(commentId);
+                CommentDTO comment = commentService.GetCommentById(commentId);
                 return StatusCode(200, comment);
             }
             catch (Exception ex)
@@ -67,6 +68,22 @@ namespace MyTwitterAPI.Controllers
                 return StatusCode(400, ex.Message);
             }
         }
+
+        [HttpGet, Route("GetAllCommentsForPost/{postId}")]
+        public IActionResult GetAllCommentsForPost(int postId)
+        {
+            try
+            {
+                List<CommentDTO> commentsForPost = commentService.GetAllCommentsForPost(postId);
+                return Ok(commentsForPost);
+            }
+            catch (Exception ex)
+            {
+                // Handle exception appropriately (e.g., log it)
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
 
         [HttpPut, Route("EditComment")]
         //[Authorize(Roles = "User")]

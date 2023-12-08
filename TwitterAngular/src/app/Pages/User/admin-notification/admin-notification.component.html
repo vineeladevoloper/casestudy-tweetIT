@@ -21,11 +21,11 @@
                     <td>{{u.userEmail}}</td>
                     <td>{{u.userType}}</td>
                     <td colspan="2">                    
-                        <div *ngIf="u.userType !== 'Admin' && u.userType !=='Blocked'">
-                            <button class="btn btn-primary" (click)="blockfn(u.userId)">Block</button>
+                        <div *ngIf="u.status == 'Requested'">
+                            <button class="btn btn-primary" (click)="upgradefn(u.userId)">Upgrade Request</button>
+                            <button class="btn btn-primary" (click)="rejectfn(u.userId)">Reject Request</button>
                         </div>
                     </td>
-                    <td><button class="btn btn-primary" (click)="postByUser(u.userId)">Posts</button></td>
             </tr>
         </tbody>
     </table> 

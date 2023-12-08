@@ -3,21 +3,27 @@ import { PostWithId } from '../../../Models/Post/post-with-id';
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router,RouterLink, RouterOutlet} from '@angular/router';
+import { UserDTO } from '../../../Models/User/user-dto';
 
 @Component({
   selector: 'app-all-posts',
   standalone: true,
-  imports: [CommonModule,HttpClientModule,FormsModule],
+  imports: [CommonModule,HttpClientModule,FormsModule,RouterLink,RouterOutlet],
   templateUrl: './all-posts.component.html',
-  styleUrl: './all-posts.component.css'
+  styleUrls: ['./all-posts.component.css']
 })
 export class AllPostsComponent {
   posts:PostWithId[]=[];
   post:PostWithId;
   searchTerm?:string='';
-  constructor(private http:HttpClient){
+  user:UserDTO;
+  userRole?:any;
+  constructor(private http:HttpClient,private router:Router){
     this.post=new PostWithId();
+    this.user=new UserDTO();
     this.getAllPosts();
+    this.userRole=localStorage.getItem('role');
   }
 
   onSearch(): void {
@@ -46,4 +52,11 @@ export class AllPostsComponent {
         return `http://localhost:5250/${url}`;
       }
 
+  viewpost(postId:any){
+    console.log(postId);
+    if(this.userRole=='User')
+      this.router.navigateByUrl('user-dashboard/view-post/'+postId);
+    else
+      this.router.navigateByUrl('admin-dashboard/view-post/'+postId);
+  }
 }

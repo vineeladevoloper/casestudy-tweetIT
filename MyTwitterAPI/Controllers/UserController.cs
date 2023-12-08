@@ -71,15 +71,40 @@ namespace MyTwitterAPI.Controllers
             }
         }
 
-        
-        [HttpPost,Route("UpgradeUser")]
-        public IActionResult UpgradeUser([FromBody] UserRequest upgradeRequest)
+        [HttpGet, Route("GetUsersByName/{searchName}")]
+        //[AllowAnonymous]
+        public IActionResult GetUsersByName(string searchName)
+        {
+            try
+            {
+                List<User> users = userService.GetUsersByName(searchName);
+                List<UserwithPWDDTO> userdtos = _mapper.Map<List<UserwithPWDDTO>>(users);
+                if (users != null)
+                {
+                    return StatusCode(200, userdtos);
+                }
+                else
+                {
+                    _logger.Error($"User with name {searchName} not found");
+                    return StatusCode(200);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpPut,Route("UpgradeUserRequest")]
+        public IActionResult UpgradeUserRequest([FromBody] RequestorReject upgradeRequest)
         {
             try
             {
                 string userIdTo = upgradeRequest.UserIdTo;
                 string adminUserId = upgradeRequest.AdminUserId;
-                var result = userService.UpgradeUser(userIdTo, adminUserId);
+                var result = userService.UpgradeUserRequest(userIdTo, adminUserId);
                 if (result.Success)
                 {
                     _logger.Info("User upgraded successfully");
@@ -98,8 +123,52 @@ namespace MyTwitterAPI.Controllers
             }
         }
 
-        [HttpPost, Route("BlockUser")]
-        public IActionResult BlockUser([FromBody] UserRequest blockRequest)
+        [HttpPut, Route("RejectUserRequest")]
+        public IActionResult RejectUserRequest([FromBody] RequestorReject upgradeReject)
+        {
+            try
+            {
+                string userIdTo = upgradeReject.UserIdTo;
+                string adminUserId = upgradeReject.AdminUserId;
+                var result = userService.RejectUserRequest(userIdTo, adminUserId);
+                if (result.Success)
+                {
+                    _logger.Info("User Upgrade request rejected");
+                    return StatusCode(200);
+                }
+                else
+                {
+                    _logger.Error(result.Message);
+                    return StatusCode(400, result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut, Route("UpgradeRequest/{userId}")]
+        //[AllowAnonymous]
+        public IActionResult UpgradeRequest(string userId)
+        {
+            try
+            {
+                userService.UpgradeRequest(userId);
+                _logger.Info("Request upgraded successfully");
+                return StatusCode(200);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpPut, Route("BlockUser")]
+        public IActionResult BlockUser([FromBody] RequestorReject blockRequest)
         {
             try
             {
@@ -135,10 +204,12 @@ namespace MyTwitterAPI.Controllers
                 if (userdto.Role == "Admin")
                 {
                     user.UserType = "Admin";
+                    user.Status = "Admin";
                 }
                 else
                 {
                     user.UserType = "Normal";
+                    user.Status = "Not requested";
                 }
                 user.ActionById = null;
                 user.ActionDoneUser = null;

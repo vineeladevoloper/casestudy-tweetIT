@@ -120,36 +120,72 @@ namespace MyTwitterAPI.Services
                 throw;
             }
         }
+        public List<User> GetUsersByName(string searchTerm)
+        {
+            try
+            {
+                List<User> users = context.Users
+            .Where(u => EF.Functions.Like(u.UserName, $"%{searchTerm}%"))
+            .ToList();
+
+                return users;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public User ValidteUser(string email, string password)
         {
             return context.Users.SingleOrDefault(u => u.UserEmail == email && u.Password == password);
         }
 
-        User IUserService.GetUserByEmail(string email)
-        {
-            try
-            {
-                return context.Users.SingleOrDefault(u=>u.UserEmail==email);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        ResultModel IUserService.UpgradeUser(string userId,string adminId)
+   
+        ResultModel IUserService.RejectUserRequest(string userId, string adminId)
         {
             try
             {
                 User user = context.Users.SingleOrDefault(u => u.UserId == userId);
-                User admin = context.Users.SingleOrDefault(u => u.UserId == adminId && u.Role=="Admin");
+                User admin = context.Users.SingleOrDefault(u => u.UserId == adminId && u.Role == "Admin");
 
-                if (user != null || admin!=null)
+                if (user != null || admin != null)
                 {
                     context.Entry(user).State = EntityState.Detached;
                     context.Entry(admin).State = EntityState.Detached;
-                    user.UserType ="Verified";
+                    user.Status = "Rejected";
+                    user.ActionById = admin.UserId;
+                    user.ActionDoneUser = admin;
+                    context.Users.Update(user);
+                    context.SaveChanges();
+                    return new ResultModel { Success = true, Message = "User upgraded successfully." };
+                }
+                else
+                {
+                    return new ResultModel { Success = false, Message = "User or Admin not found." };
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
+            }
+        }
+
+
+        ResultModel IUserService.UpgradeUserRequest(string userId, string adminId)
+        {
+            try
+            {
+                User user = context.Users.SingleOrDefault(u => u.UserId == userId);
+                User admin = context.Users.SingleOrDefault(u => u.UserId == adminId && u.Role == "Admin");
+
+                if (user != null || admin != null)
+                {
+                    context.Entry(user).State = EntityState.Detached;
+                    context.Entry(admin).State = EntityState.Detached;
+                    user.UserType = "Verified";
+                    user.Status = "Upgraded";
                     user.ActionById = admin.UserId;
                     user.ActionDoneUser = admin;
                     context.Users.Update(user);
@@ -194,6 +230,23 @@ namespace MyTwitterAPI.Services
             {
 
                 return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
+            }
+        }
+
+        void IUserService.UpgradeRequest(string userId)
+        {
+            try
+            {
+                User user = context.Users.SingleOrDefault(u => u.UserId == userId);
+                user.Status = "Requested";
+                Console.WriteLine(user.UserId);
+                Console.WriteLine(user.Status);
+                context.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
