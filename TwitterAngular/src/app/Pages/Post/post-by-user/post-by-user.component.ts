@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule,HttpClient } from '@angular/common/http';
+import { HttpClientModule,HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PostWithId } from '../../../Models/Post/post-with-id';
@@ -20,7 +20,16 @@ export class PostByUserComponent {
   searchTerm?:string='';
   user:UserDTO;
   role:any;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private http:HttpClient,private activateRoute: ActivatedRoute,private router:Router){
+    if(localStorage.getItem('role')==null){
+      this.router.navigateByUrl('**');
+    }
     this.post=new PostWithId();
     this.user=new UserDTO();
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
@@ -34,7 +43,7 @@ export class PostByUserComponent {
     }
     else{
       this.http
-      .get<PostWithId[]>('http://localhost:5250/api/Post/SearchPostsByTitleAndUserId/'+this.userId+'/'+this.searchTerm)
+      .get<PostWithId[]>('http://localhost:5250/api/Post/SearchPostsByTitleAndUserId/'+this.userId+'/'+this.searchTerm,this.httpOptions)
       .subscribe((response)=>{
         this.posts=response;
         console.log(this.posts);
@@ -43,7 +52,7 @@ export class PostByUserComponent {
   }
   getPosts(){
     this.http
-    .get<PostWithId[]>('http://localhost:5250/api/Post/ListPostByUserId/'+this.userId)
+    .get<PostWithId[]>('http://localhost:5250/api/Post/ListPostByUserId/'+this.userId,this.httpOptions)
     .subscribe((response)=>{
       this.posts=response;
       console.log(this.posts);
@@ -60,11 +69,18 @@ this.router.navigateByUrl('user-dashboard/edit-post/'+postId);
   delete(postId:any){
     console.log(postId);
     this.http
-      .delete('http://localhost:5250/api/Post/DeletePost/'+postId)
+      .delete('http://localhost:5250/api/Post/DeletePost/'+postId,this.httpOptions)
       .subscribe((response)=>{
         console.log(response);
       })
     this.router.navigateByUrl('user-dashboard/all-posts');
   }
 
+  viewpost(postId:any){
+    console.log(postId);
+    if(this.role=='User')
+      this.router.navigateByUrl('user-dashboard/view-post/'+postId);
+    else
+      this.router.navigateByUrl('admin-dashboard/view-post/'+postId);
+  }
 }

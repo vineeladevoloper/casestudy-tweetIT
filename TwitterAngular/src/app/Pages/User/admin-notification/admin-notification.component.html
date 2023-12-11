@@ -16,10 +16,10 @@
         <tbody>
             <tr *ngFor="let u of users">
                     <td>{{u.userId}}</td>
-                    <td>{{u.userName}}<span *ngIf="u.userType=='Verified'" class="verified">✔</span></td>
+                    <td>{{u.name}}<span *ngIf="u.type=='Verified'" class="verified">✔</span></td>
                     <td>{{u.role}}</td>
                     <td>{{u.userEmail}}</td>
-                    <td>{{u.userType}}</td>
+                    <td>{{u.type}}</td>
                     <td colspan="2">                    
                         <div *ngIf="u.status == 'Requested'">
                             <button class="btn btn-primary" (click)="upgradefn(u.userId)">Upgrade Request</button>

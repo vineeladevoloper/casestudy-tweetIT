@@ -102,7 +102,7 @@ namespace MyTwitterAPI.Services
                 {
                     var name = context.Users.SingleOrDefault(u => u.UserId == commentDto.UserId);
                     var post = context.Posts.SingleOrDefault(p=> p.PostId == commentDto.PostId);
-                    commentDto.User = name.UserName;
+                    commentDto.User = name.Name;
                     commentDto.Post = post.Title;
 
                 }
@@ -129,7 +129,7 @@ namespace MyTwitterAPI.Services
                 {
                     var name = context.Users.SingleOrDefault(u => u.UserId == commentDto.UserId);
                     var post = context.Posts.SingleOrDefault(p => p.PostId == commentDto.PostId);
-                    commentDto.User = name.UserName;
+                    commentDto.User = name.Name;
                     commentDto.Post = post.Title;
                 }
 
@@ -150,7 +150,7 @@ namespace MyTwitterAPI.Services
                 CommentDTO commentDTO = _mapper.Map<CommentDTO>(comment);
                 var name = context.Users.SingleOrDefault(u => u.UserId == comment.UserId);
                 var post = context.Posts.SingleOrDefault(p => p.PostId == comment.PostId);
-                commentDTO.User = name.UserName;
+                commentDTO.User = name.Name;
                 commentDTO.Post = post.Title;
                 return commentDTO;
             }

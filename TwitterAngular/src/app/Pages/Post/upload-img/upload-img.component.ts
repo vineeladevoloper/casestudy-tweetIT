@@ -1,6 +1,7 @@
 import { Component ,EventEmitter,OnInit,Output} from '@angular/core';
-import { HttpClient,HttpEventType,HttpErrorResponse, HttpClientModule } from '@angular/common/http';
+import { HttpClient,HttpEventType,HttpErrorResponse, HttpClientModule} from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload-img',
@@ -13,8 +14,11 @@ export class UploadImgComponent implements OnInit{
   progress?: number;
   message?: string;
   @Output() public onUploadFinished = new EventEmitter();
-  
-  constructor(private http: HttpClient) {   }
+  constructor(private http: HttpClient,private router:Router) {  
+    if(localStorage.getItem('role')!='User'){
+      this.router.navigateByUrl('**');
+    }
+   }
   ngOnInit() {
   }
     uploadFile = (files: any) => {

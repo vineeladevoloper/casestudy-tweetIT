@@ -34,7 +34,7 @@ namespace MyTwitterAPI.Services
 
                 // Optionally, fetch additional details for the user
                 var user = context.Users.SingleOrDefault(u => u.UserId == likeDTO.UserId);
-                likeDTO.User = user?.UserName;
+                likeDTO.User = user?.Name;
 
                 return likeDTO;
             }
@@ -124,17 +124,19 @@ namespace MyTwitterAPI.Services
         {
             try
             {
+                Console.WriteLine(postId);
+                Console.WriteLine(userId);
                 Like like= context.Likes.SingleOrDefault(l => l.PostId == postId && l.UserId == userId);
                 if(like != null)
                 {
                     LikeDTO likedto = _mapper.Map<LikeDTO>(like);
                     var name = context.Users.SingleOrDefault(u => u.UserId == likedto.UserId);
-                    likedto.User = name.UserName;
-                    return new ResultModel { Success = true, Message = "Like found." };
+                    likedto.User = name.Name;
+                    return new ResultModel { Success = true, Message = "found." };
                 }
                 else
                 {
-                    return new ResultModel { Success = true, Message = "Like not found." };
+                    return new ResultModel { Success = false, Message = "Like not found." };
                 }
             }
             catch (Exception ex)
@@ -154,7 +156,7 @@ namespace MyTwitterAPI.Services
                 foreach (var likeDTO in likeDTOs)
                 {
                     var user = context.Users.SingleOrDefault(u => u.UserId == likeDTO.UserId);
-                    likeDTO.User = user?.UserName;
+                    likeDTO.User = user?.Name;
                 }
                 return likeDTOs;
             }

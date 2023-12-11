@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
 import { AdminAction } from '../../../Models/User/admin-action';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-notification',
@@ -21,7 +22,16 @@ export class AdminNotificationComponent {
   user:UserDTO;
   userId?:any;
   searchUserId: string = '';
-  constructor(private http:  HttpClient){
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
+  constructor(private http:  HttpClient,private router:Router){
+    if(localStorage.getItem('role')!='Admin'){
+      this.router.navigateByUrl('**');
+    }
     this.user=new UserDTO();
     this.action=new AdminAction();
     this.getAllUsers();
@@ -29,7 +39,7 @@ export class AdminNotificationComponent {
   
     getAllUsers(){
       this.http
-      .get<UserDTO[]>('http://localhost:5250/api/User/GetAllUsers')
+      .get<UserDTO[]>('http://localhost:5250/api/User/GetAllUsers',this.httpOptions)
       .subscribe((response)=>{
         this.users=response;
         this.users = this.users.filter(user => user.role !== 'Admin');
@@ -46,7 +56,7 @@ export class AdminNotificationComponent {
       }
       else{
         this.http
-        .get<UserDTO[]>('http://localhost:5250/api/User/GetUsersByName/'+this.searchTerm)
+        .get<UserDTO[]>('http://localhost:5250/api/User/GetUsersByName/'+this.searchTerm,this.httpOptions)
         .subscribe((response)=>{
           this.users=response;
           this.users = this.users.filter(user => user.role !== 'Admin');
@@ -61,7 +71,7 @@ export class AdminNotificationComponent {
       this.action.adminUserId=this.adminId;
       this.action.userIdTo=userID;
       console.log(this.action);
-      this.http.put('http://localhost:5250/api/User/UpgradeUserRequest',this.action)
+      this.http.put('http://localhost:5250/api/User/UpgradeUserRequest',this.action,this.httpOptions)
       .subscribe((response)=>{
         console.log(response);
         this.getAllUsers();
@@ -73,7 +83,7 @@ export class AdminNotificationComponent {
       this.action.adminUserId=this.adminId;
       this.action.userIdTo=userID;
       console.log(this.action);
-      this.http.put('http://localhost:5250/api/User/RejectUserRequest',this.action)
+      this.http.put('http://localhost:5250/api/User/RejectUserRequest',this.action,this.httpOptions)
       .subscribe((response)=>{
         console.log(response);
         this.getAllUsers();

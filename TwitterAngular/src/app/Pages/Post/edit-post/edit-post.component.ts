@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router ,ActivatedRoute} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 import { PostWithId } from '../../../Models/Post/post-with-id';
 import { UploadImgComponent } from '../upload-img/upload-img.component';
@@ -18,7 +18,16 @@ export class EditPostComponent {
   post:PostWithId;
   postId?:number;
   response: any;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private router:Router,private activateRoute: ActivatedRoute,private http:HttpClient){
+    if(localStorage.getItem('role')!='User'){
+      this.router.navigateByUrl('**');
+    }
     this.post=new PostWithId();
     this.activateRoute.params.subscribe((p) => (this.postId = p['pid']));
     console.log(this.postId);
@@ -31,7 +40,7 @@ export class EditPostComponent {
   search() {
     this.http
       .get<PostWithId>(
-        'http://localhost:5250/api/Post/GetPostById/' + this.postId
+        'http://localhost:5250/api/Post/GetPostById/' + this.postId,this.httpOptions
       )
       .subscribe((response) => {
         console.log(response);
@@ -41,7 +50,7 @@ export class EditPostComponent {
   edit() {
     console.log(this.post);
     this.http
-      .put('http://localhost:5250/api/Post/EditPost', this.post)
+      .put('http://localhost:5250/api/Post/EditPost', this.post,this.httpOptions)
       .subscribe((response) => {
         console.log(response);
       });

@@ -3,7 +3,7 @@ import { Login } from '../../../Models/User/login';
 import { CommonModule } from '@angular/common';
 import { FormsModule,NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient,HttpClientModule } from '@angular/common/http';
+import { HttpClient,HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { UserDTO } from '../../../Models/User/user-dto';
 
 @Component({
@@ -18,6 +18,12 @@ export class LoginComponent {
   user:any;
   errMsg: string = '';
   httpResponse: any;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private router:Router,private http:HttpClient){
     this.login=new Login();
   }
@@ -30,7 +36,7 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    this.http.post('http://localhost:5250/api/User/Validate',this.login)
+    this.http.post('http://localhost:5250/api/User/Validate',this.login,this.httpOptions)
     .subscribe((response)=>{
       this.httpResponse = response;
         console.log(this.httpResponse);
@@ -57,6 +63,7 @@ export class LoginComponent {
 
   onReset(form: NgForm): void {
     form.reset();
+    this.errMsg='';
   }
 
   redirectToRegister() {

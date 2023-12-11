@@ -31,7 +31,8 @@ namespace MyTwitterAPI.Controllers
             this._logger = logger;
         }
         [HttpGet,Route("GetAllUsers")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
+        //
         public IActionResult GetAllUsers()
         {
             try
@@ -47,7 +48,8 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet,Route("GetUserById/{userId}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult GetUserById(string userId) 
         {
             try
@@ -72,7 +74,8 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpGet, Route("GetUsersByName/{searchName}")]
-        //[AllowAnonymous]
+        [Authorize(Roles = "Admin")]
+        //
         public IActionResult GetUsersByName(string searchName)
         {
             try
@@ -98,6 +101,8 @@ namespace MyTwitterAPI.Controllers
 
 
         [HttpPut,Route("UpgradeUserRequest")]
+        [Authorize(Roles = "Admin")]
+        //
         public IActionResult UpgradeUserRequest([FromBody] RequestorReject upgradeRequest)
         {
             try
@@ -124,6 +129,8 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpPut, Route("RejectUserRequest")]
+        [Authorize(Roles = "Admin")]
+        //
         public IActionResult RejectUserRequest([FromBody] RequestorReject upgradeReject)
         {
             try
@@ -150,7 +157,8 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpPut, Route("UpgradeRequest/{userId}")]
-        //[AllowAnonymous]
+        [Authorize(Roles = "User")]
+        //
         public IActionResult UpgradeRequest(string userId)
         {
             try
@@ -168,6 +176,7 @@ namespace MyTwitterAPI.Controllers
 
 
         [HttpPut, Route("BlockUser")]
+        [Authorize(Roles = "Admin")]
         public IActionResult BlockUser([FromBody] RequestorReject blockRequest)
         {
             try
@@ -195,7 +204,8 @@ namespace MyTwitterAPI.Controllers
 
 
         [HttpPost,Route("Register")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult AddUser(UserwithPWDDTO userdto)
         {
             try
@@ -203,12 +213,12 @@ namespace MyTwitterAPI.Controllers
                 User user = _mapper.Map<User>(userdto);
                 if (userdto.Role == "Admin")
                 {
-                    user.UserType = "Admin";
+                    user.Type = "Admin";
                     user.Status = "Admin";
                 }
                 else
                 {
-                    user.UserType = "Normal";
+                    user.Type = "Normal";
                     user.Status = "Not requested";
                 }
                 user.ActionById = null;
@@ -231,32 +241,10 @@ namespace MyTwitterAPI.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        [HttpDelete,Route("Deleteuser/{userId}")]
-        //[Authorize(Roles = "Admin")]
-        public IActionResult DeleteUser(string userId) 
-        {
-            try
-            {
-                var result=userService.DeleteUser(userId);
-                if (result.Success)
-                {
-                    _logger.Error($"User with Id {userId} is deleted successfully");
-                    return StatusCode(200, new JsonResult($"User with Id {userId} is deleted successfully"));
-                }
-                else
-                {
-                    _logger.Error(result.Message);
-                    return StatusCode(400, result.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message);
-                return StatusCode(400, ex.Message);
-            }
-        }
+
         [HttpPut,Route("EditUser")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult EditUser(UserwithPWDDTO userdto) 
         {
             try
@@ -282,6 +270,7 @@ namespace MyTwitterAPI.Controllers
         }
         [HttpPost, Route("Validate")]
         [AllowAnonymous]
+        //
         public IActionResult Validate(Login login)
         {
             try
@@ -315,7 +304,7 @@ namespace MyTwitterAPI.Controllers
             //payload part
             var subject = new ClaimsIdentity(new[]
             {
-                        new Claim(ClaimTypes.Name,user.UserName),
+                        new Claim(ClaimTypes.Name,user.Name),
                         new Claim(ClaimTypes.Role, user.Role),
                         new Claim(ClaimTypes.Email,user.UserEmail),
                     });

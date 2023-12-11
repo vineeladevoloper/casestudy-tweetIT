@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule ,HttpClient} from '@angular/common/http';
+import { HttpClientModule ,HttpClient, HttpHeaders} from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router ,ActivatedRoute} from '@angular/router';
 import { PostWithId } from '../../../Models/Post/post-with-id';
 import { Comment } from '../../../Models/Comment/comment';
-import { Like } from '../../../Models/like';
+import { Like } from '../../../Models/Like/like';
 import { UserDTO } from '../../../Models/User/user-dto';
+import { CommentNotificationWithoutId } from '../../../Models/Comment/comment-notification-without-id';
 
 @Component({
   selector: 'app-view-post',
@@ -28,10 +29,21 @@ export class ViewPostComponent {
   comment:Comment;
   comments:Comment[]=[];
   newCommentText: string = '';
+  commentNotification:CommentNotificationWithoutId;
   role?:any;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private http:HttpClient,private activateRoute: ActivatedRoute,private router:Router){
+    if(localStorage.getItem('role')==null){
+      this.router.navigateByUrl('**');
+    }
     this.post=new PostWithId();
     this.comment=new Comment();
+    this.commentNotification=new CommentNotificationWithoutId();
     this.user=new UserDTO();
     this.like=new Like();
     this.role=localStorage.getItem('role');
@@ -41,7 +53,7 @@ export class ViewPostComponent {
 
   getPost(){
     this.http
-    .get('http://localhost:5250/api/Post/GetPostById/'+this.postId)
+    .get('http://localhost:5250/api/Post/GetPostById/'+this.postId,this.httpOptions)
     .subscribe((response)=>{
       this.post=response;
     })
@@ -54,7 +66,7 @@ export class ViewPostComponent {
 
   getAllcomments(){
     this.http
-    .get<Comment[]>('http://localhost:5250/api/Comment/GetAllCommentsForPost/'+this.postId)
+    .get<Comment[]>('http://localhost:5250/api/Comment/GetAllCommentsForPost/'+this.postId,this.httpOptions)
     .subscribe((response)=>{
       this.comments=response;
       console.log(this.comments);
@@ -64,15 +76,30 @@ export class ViewPostComponent {
     this.comment.commentText=this.newCommentText;
     this.comment.postId=this.postId;
     this.comment.userId=localStorage.getItem('userId')?.toString();
+    console.log(this.comment.commentText);
+    console.log(this.comment.postId);
+    console.log(this.comment.userId);
+    console.log(this.post.userId);
+
     this.http
-      .post('http://localhost:5250/api/Comment/AddComment',this.comment)
+      .post('http://localhost:5250/api/Comment/AddComment',this.comment,this.httpOptions)
       .subscribe((response)=>{
         console.log(response);
-        // this.comments.push(response);
         this.getAllcomments();
         
       })
+      this.commentNotification.commentText=this.newCommentText;
+      this.commentNotification.postId=this.postId;
+      this.commentNotification.receiverId=this.post.userId;
+      this.commentNotification.senderId=this.comment.userId;
       this.newCommentText='';
+      this.http
+      .post('http://localhost:5250/api/CommentNotification/AddCommentNotification',this.commentNotification,this.httpOptions)
+      .subscribe((response)=>{
+        console.log(response);
+        this.getAllcomments();
+        
+      })
       
   }
 
@@ -85,8 +112,8 @@ export class ViewPostComponent {
   }
   toggleLikes() {
     this.showLikes = !this.showLikes;
+    this.checkLikeStatus();
     if(this.showLikes==true){
-      this.checkLikeStatus();
       this.getLikes();
       this.showComments=false;
     }
@@ -94,13 +121,19 @@ export class ViewPostComponent {
 
   checkLikeStatus() {
     this.like.userId=localStorage.getItem('userId')?.toString();
-    this.http.get('http://localhost:5250/api/Like/GetLikeByPostAndUser/'+this.postId+'/'+this.like.userId).subscribe(
-      (like: any) => {
-        this.likeStatus = !!like;
-      },
-      error => {
-        console.error('Error checking like status', error);
-      }
+    console.log(this.postId)
+    console.log(this.like.userId)
+    this.http.get('http://localhost:5250/api/Like/GetLikeByPostAndUser/'+this.postId+'/'+this.like.userId,this.httpOptions)
+    .subscribe((response)=>{
+        console.log(response);
+        if(response==this.postId){
+          console.log(true);
+          this.likeStatus=true;
+        }
+        else{
+          this.likeStatus=false;
+        }
+    }
     );
   }
 
@@ -115,7 +148,7 @@ export class ViewPostComponent {
   performLike() {
     this.like.postId=this.postId;
     this.like.userId=localStorage.getItem('userId')?.toString();
-    this.http.post('http://localhost:5250/api/Like/AddLike',this.like).subscribe(
+    this.http.post('http://localhost:5250/api/Like/AddLike',this.like,this.httpOptions).subscribe(
       response => {
         this.like=response;
         this.likeId=this.like.likeId;
@@ -129,7 +162,7 @@ export class ViewPostComponent {
   }
 
   removeLike() {
-    this.http.delete('http://localhost:5250/api/Like/DeleteLikeByUserPost/'+this.postId+'/'+this.like.userId).subscribe(
+    this.http.delete('http://localhost:5250/api/Like/DeleteLikeByUserPost/'+this.postId+'/'+this.like.userId,this.httpOptions).subscribe(
       response => {
         console.log('Like removed successfully');
         this.getLikes();
@@ -141,7 +174,7 @@ export class ViewPostComponent {
 
   getLikes(){
     this.http
-    .get<Like[]>('http://localhost:5250/api/Like/GetLikesByPost/'+this.postId)
+    .get<Like[]>('http://localhost:5250/api/Like/GetLikesByPost/'+this.postId,this.httpOptions)
     .subscribe((response)=>{
       this.likes=response;
       console.log(this.likes);

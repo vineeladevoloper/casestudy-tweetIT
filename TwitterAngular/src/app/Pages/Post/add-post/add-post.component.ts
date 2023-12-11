@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule ,HttpHeaders} from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PostWithoutIdDTO } from '../../../Models/Post/post-without-id-dto';
@@ -20,7 +20,16 @@ export class AddPostComponent {
   response: any;
   msg?:string='';
   userId?:string;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private http:HttpClient,private router:Router,private activateRoute: ActivatedRoute){
+    if(localStorage.getItem('role')!='User'){
+      this.router.navigateByUrl('**');
+    }
     this.post=new PostWithoutIdDTO;
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     this.response={dbPath: ''};
@@ -34,7 +43,7 @@ export class AddPostComponent {
  
    onSubmit(): void {
     console.log(this.post);
-      this.http.post('http://localhost:5250/api/Post/AddPost', this.post)
+      this.http.post('http://localhost:5250/api/Post/AddPost', this.post,this.httpOptions)
       .subscribe(response => {
         console.log('Post created successfully', response);
         this.msg='Post created successfully';

@@ -9,7 +9,7 @@
         <tr>
             <td>User Name</td>
             <td>
-                <input type="text" [(ngModel)]="user.userName" class="form-control">
+                <input type="text" [(ngModel)]="user.name" class="form-control">
             </td>
         </tr>
         <tr>
@@ -21,7 +21,7 @@
         <tr *ngIf="role === 'User'">
             <td>User Type</td>
             <td>
-                <input type="text" [(ngModel)]="user.userType" readonly class="form-control">
+                <input type="text" [(ngModel)]="user.type" readonly class="form-control">
             </td>
         </tr>
         <tr>

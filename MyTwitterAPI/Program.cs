@@ -15,6 +15,7 @@ builder.Services.AddTransient<IUserService,UserService>();
 builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<ILikeService, LikeService>();
+builder.Services.AddTransient<ICommentNotificationService, CommentNotificationService>();
 // Add services to the container.
 
 builder.Services.AddLog4net();

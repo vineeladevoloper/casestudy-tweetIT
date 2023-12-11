@@ -14,6 +14,8 @@ import { PostByUserComponent } from './Pages/Post/post-by-user/post-by-user.comp
 import { EditPostComponent } from './Pages/Post/edit-post/edit-post.component';
 import { ViewPostComponent } from './Pages/Post/view-post/view-post.component';
 import { AdminNotificationComponent } from './Pages/User/admin-notification/admin-notification.component';
+import { CommentNotificationComponent } from './Pages/User/comment-notification/comment-notification.component';
+import { NotFoundComponent } from './Pages/not-found/not-found.component';
 
 export const routes: Routes = [
   { path:'',component:LoginComponent},
@@ -21,7 +23,7 @@ export const routes: Routes = [
     { path: 'contact', component: ContactComponent },
     { path:'register',component:RegisterComponent},
     { path:'login',component:LoginComponent},
-    { path:'user-dashboard',component:UserDashboardComponent,
+        { path:'user-dashboard',component:UserDashboardComponent,
     children: [
       {path:'',component:AllPostsComponent},
       { path:'edit-user/:uid',component:EditUserComponent},
@@ -31,7 +33,8 @@ export const routes: Routes = [
       { path:'add-post/:uid',component:AddPostComponent},
       { path:'post-by-user/:uid',component:PostByUserComponent},
       { path:'edit-post/:pid',component:EditPostComponent},   
-      { path:'view-post/:pid',component:ViewPostComponent},   
+      { path:'view-post/:pid',component:ViewPostComponent},  
+      { path:'comment-notifications/:uid',component:CommentNotificationComponent} 
     ]
     },
     {path:'admin-dashboard',component:AdminDashboardComponent,
@@ -45,5 +48,6 @@ export const routes: Routes = [
         { path:'view-post/:pid',component:ViewPostComponent}, 
         { path:'admin-notifications',component:AdminNotificationComponent}
       ]
-    }
+    },
+    {path: '**', component:NotFoundComponent},
 ];

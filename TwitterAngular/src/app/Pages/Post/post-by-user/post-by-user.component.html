@@ -11,9 +11,10 @@
           <div class="card-body">
             <h5 class="card-title">{{ 'Title: ' + post.title }}</h5>
             <p class="card-text">{{ 'Description: ' + post.description }}</p>
-            <p class="card-text">{{ 'User Name: ' + post.user }}
+            <p class="card-text">{{ 'User Name: ' + post.userName }}
               <span *ngIf="post.userType=='Verified'" class="verified">✔</span></p>
             <p class="card-text">{{ 'Date and Time: ' + (post.dateandTime | date:'yyyy-MM-dd HH:mm') }}</p>
+            <button type="submit" class="btn btn-primary" (click)="viewpost(post.postId)">View Post</button>
           </div>
         </div>
         <hr>

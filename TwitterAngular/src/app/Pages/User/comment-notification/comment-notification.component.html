@@ -1,0 +1,28 @@
+<div class="container mt-4">
+    <h2>Comment Notifications</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sender Name</th>
+                <th>Post Title</th>
+                <th>Comment Text</th>
+                <th>Time</th>
+                <th>Mark as Read</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let n of notificationList">
+                <td>{{n.senderName}}</td>
+                <td>{{n.postTitle}}</td>
+                <td>{{n.commentText}}</td>
+                <td>{{n.notificationTime| date:'dd-MM-YYYY HH:mm'}}</td>
+                <td>
+                    <input type="checkbox" [(ngModel)]="n.read" (change)="markAsRead(n.commentNotificationId)" />
+                </td>
+          
+        </tr>
+        </tbody>
+    </table>
+</div>
+

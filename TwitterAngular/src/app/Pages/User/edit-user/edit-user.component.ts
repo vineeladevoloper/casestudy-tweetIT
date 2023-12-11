@@ -3,7 +3,7 @@ import { UserDTO } from '../../../Models/User/user-dto';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router ,ActivatedRoute} from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -19,7 +19,16 @@ export class EditUserComponent {
   role?:any;
   errMsg: string = '';
   isUserExist: boolean = false;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private router:Router,private activateRoute: ActivatedRoute,private http:HttpClient){
+    if(localStorage.getItem('role')==null){
+      this.router.navigateByUrl('**');
+    }
     this.user=new UserDTO();
     this.role=localStorage.getItem('role');
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
@@ -29,7 +38,7 @@ export class EditUserComponent {
   search() {
     this.http
       .get<UserDTO>(
-        'http://localhost:5250/api/User/GetUserById/' + this.userId
+        'http://localhost:5250/api/User/GetUserById/' + this.userId,this.httpOptions
       )
       .subscribe((response) => {
         console.log(response);
@@ -45,7 +54,7 @@ export class EditUserComponent {
   }
   edit() {
     this.http
-      .put('http://localhost:5250/api/User/EditUser', this.user)
+      .put('http://localhost:5250/api/User/EditUser', this.user,this.httpOptions)
       .subscribe((response) => {
         console.log(response);
       });
@@ -58,7 +67,7 @@ export class EditUserComponent {
   }
   upgrade(userId:any){
     this.http
-      .put('http://localhost:5250/api/User/UpgradeRequest/'+ userId,userId)
+      .put('http://localhost:5250/api/User/UpgradeRequest/'+ userId,userId,this.httpOptions)
       .subscribe((response) => {
         this.search();
         console.log(response);

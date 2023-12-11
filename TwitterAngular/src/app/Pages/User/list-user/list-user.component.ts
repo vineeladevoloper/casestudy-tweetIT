@@ -29,6 +29,9 @@ export class ListUserComponent {
   userId?:any;
   searchUserId: string = '';
   constructor(private http:  HttpClient,private router:Router){
+    if(localStorage.getItem('role')!='Admin'){
+      this.router.navigateByUrl('**');
+    }
     this.user=new UserDTO();
     this.action=new AdminAction();
     this.getAllUsers();
@@ -66,7 +69,7 @@ export class ListUserComponent {
     }
     else{
       this.http
-      .get<UserDTO[]>('http://localhost:5250/api/User/GetUsersByName/'+this.searchTerm)
+      .get<UserDTO[]>('http://localhost:5250/api/User/GetUsersByName/'+this.searchTerm,this.httpOptions)
       .subscribe((response)=>{
         this.users=response;
         console.log(this.users);

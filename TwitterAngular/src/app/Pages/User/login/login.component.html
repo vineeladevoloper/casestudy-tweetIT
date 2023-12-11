@@ -1,7 +1,7 @@
 <div class="container">
     <div class="col-4 text-right">
-      <button class="btn btn-primary mr-2" onclick="about()">About</button>
-      <button class="btn btn-secondary" onclick="contact()">Contact</button>
+      <button class="btn btn-primary mr-2" (click)="about()">About</button>
+      <button class="btn btn-secondary" (click)="contact()">Contact</button>
     </div>
   </div>
 <div class="register-form p-5 border">
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-
+        <div class="text-danger">{{errMsg}}</div>
        <div class="form-group ">
             <button type="submit" class="btn btn-primary">Login</button>
             <button type="button" (click)="onReset(f)" class="btn btn-warning float-right">

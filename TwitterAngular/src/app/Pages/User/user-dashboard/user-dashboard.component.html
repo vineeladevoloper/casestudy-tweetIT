@@ -1,6 +1,6 @@
 <div class="container-fluid">
-  <div *ngIf="user.userType === 'Blocked'; else notBlocked">
-      <h5>Welcome {{user.userName}}!</h5>
+  <div *ngIf="user.type === 'Blocked'; else notBlocked">
+      <h5>Welcome {{user.name}}!</h5>
             <p>You are blocked and can't access anything.</p>
       <button class="btn btn-primary float-right" (click)="logout()">Log out</button>
     </div>
@@ -9,8 +9,7 @@
       <div class="row">
         <!-- Left Pane -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-          <p>Dashboard</p>
-          <p>Welcome {{user.userName}}!<span *ngIf="user.userType=='Verified'" class="verified">✔</span></p>
+          <p>Welcome {{user.name}}!<span *ngIf="user.type=='Verified'" class="verified">✔</span></p>
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
@@ -27,6 +26,9 @@
               </li>       
               <li class="nav-item">
                 <a class="nav-link" [routerLink]="'post-by-user/' + user.userId">My Posts</a>
+              </li> 
+              <li class="nav-item">
+                <a *ngIf="user.type=='Verified'" class="nav-link" [routerLink]="'comment-notifications/' + user.userId">Comment Notifications</a>
               </li> 
               <li class="nav-item">
                 <button class="btn btn-primary " (click)="logout()">Log out</button>

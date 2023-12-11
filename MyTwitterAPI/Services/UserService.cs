@@ -74,7 +74,7 @@ namespace MyTwitterAPI.Services
                  if (existinguser != null)
                 {
                     context.Entry(existinguser).State = EntityState.Detached;
-                    newuser.UserType = existinguser.UserType;
+                    newuser.Type = existinguser.Type;
                     newuser.ActionById = existinguser.ActionById;
                     newuser.ActionDoneUser = existinguser.ActionDoneUser;
                     context.Users.Update(newuser);
@@ -125,7 +125,7 @@ namespace MyTwitterAPI.Services
             try
             {
                 List<User> users = context.Users
-            .Where(u => EF.Functions.Like(u.UserName, $"%{searchTerm}%"))
+            .Where(u => EF.Functions.Like(u.Name, $"%{searchTerm}%"))
             .ToList();
 
                 return users;
@@ -184,7 +184,7 @@ namespace MyTwitterAPI.Services
                 {
                     context.Entry(user).State = EntityState.Detached;
                     context.Entry(admin).State = EntityState.Detached;
-                    user.UserType = "Verified";
+                    user.Type = "Verified";
                     user.Status = "Upgraded";
                     user.ActionById = admin.UserId;
                     user.ActionDoneUser = admin;
@@ -214,7 +214,7 @@ namespace MyTwitterAPI.Services
                 {
                     context.Entry(user).State = EntityState.Detached;
                     context.Entry(admin).State = EntityState.Detached;
-                    user.UserType = "Blocked";
+                    user.Type = "Blocked";
                     user.ActionById = admin.UserId;
                     user.ActionDoneUser = admin;
                     context.Users.Update(user);

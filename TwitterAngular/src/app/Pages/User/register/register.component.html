@@ -1,7 +1,7 @@
 <div class="container">
     <div class="col-4 text-right">
-      <button class="btn btn-primary mr-2" onclick="about()">About</button>
-      <button class="btn btn-secondary" onclick="contact()">Contact</button>
+        <button class="btn btn-primary mr-2" (click)="about()">About</button>
+        <button class="btn btn-secondary" (click)="contact()">Contact</button>
     </div>
   </div>
 <div class="register-form p-5 border">
@@ -18,7 +18,7 @@
 
         <div class="form-group">
             <label>User Name</label>
-            <input type="text" class="form-control" name="userName" [(ngModel)]="user.userName" required minlength="6"
+            <input type="text" class="form-control" name="userName" [(ngModel)]="user.name" required minlength="6"
                 maxlength="20" #userName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && userName.errors }" />
             <div *ngIf="f.submitted && userName.errors" class="invalid-feedback">
                 <div *ngIf="userName.errors['required']">userName is required</div>
@@ -73,7 +73,7 @@
             </div>
         </div>
 
-
+        <div class="text-danger">{{errMsg}}</div>
        <div class="form-group ">
             <button type="submit" class="btn btn-primary">Register</button>
             <button type="button" (click)="onReset(f)" class="btn btn-warning float-right">

@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { UserDTO } from '../../../Models/User/user-dto';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
+import { HttpClientModule ,HttpClient,HttpHeaders} from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,21 +15,27 @@ import { Router } from '@angular/router';
 export class AdminDashboardComponent {
   admin:UserDTO;
   adminId:any;
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
   constructor(private http:HttpClient,private router:Router,private route: ActivatedRoute){
+    if(localStorage.getItem('role')!='Admin'){
+         this.router.navigateByUrl('**');
+    }
       this.admin=new UserDTO();
       this.adminId=localStorage.getItem('userId');
-      console.log(this.adminId);
-      this.http.get('http://localhost:5250/api/User/GetUserById/'+this.adminId)
+      // console.log(this.adminId);
+      this.http.get('http://localhost:5250/api/User/GetUserById/'+this.adminId,this.httpOptions)
       .subscribe((response)=>{
         this.admin=response;
         console.log(this.admin);
       })
   }
 
-  shouldDisplayImage(): boolean {
-    // Check if the current route is AdminDashboardComponent
-    return this.route.snapshot.routeConfig?.path === 'admin-dashboard';
-  }
+
   logout(){
     localStorage.removeItem('userId');
     localStorage.removeItem('token');

@@ -1,9 +1,9 @@
 export class UserDTO {
     public userId?:string;
-    public userName?:string;
+    public name?:string;
     public role?:string;
     public userEmail?:string;
     public password?:string;
-    public userType?:string;
+    public type?:string;
     public status?:string;
 }

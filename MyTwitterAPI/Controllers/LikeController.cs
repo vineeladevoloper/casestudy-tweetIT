@@ -24,7 +24,8 @@ namespace MyTwitterAPI.Controllers
             this._logger = logger;
         }
         [HttpPost, Route("AddLike")]
-       // [Authorize(Roles = "User")]
+       [Authorize(Roles = "User")]
+       //
         public IActionResult AddLike(LikeWithoutIdDTO likedto)
         {
             Like like = _mapper.Map<Like>(likedto);
@@ -34,52 +35,23 @@ namespace MyTwitterAPI.Controllers
             likeService.AddLike(like);
             return StatusCode(200, like);
         }
-        [HttpGet, Route("GetAlllike")]
-       // [Authorize(Roles = "Admin")]
-        public IActionResult GetAllLike()
-        {
-            try
-            {
-                List<Like> likes = likeService.GetAllLike();
-                List<LikeDTO> likeDTOs = _mapper.Map<List<LikeDTO>>(likes);
-                return StatusCode(200, likeDTOs);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message);
-                return StatusCode(400, ex.Message);
-            }
-        }
-        [HttpGet, Route("GetLikeById/{likeId}")]
-        //[AllowAnonymous]
-        public IActionResult GetLikeById(int likeId)
-        {
-            try
-            {
-                Like like = likeService.GetLikeById(likeId);
-                return StatusCode(200, like);
-            }
-            catch (Exception ex)
-            {
-
-                return StatusCode(400, ex.Message);
-            }
-        }
 
         [HttpGet, Route("GetLikeByPostAndUser/{postId}/{userId}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult GetLikeByPostAndUser(int postId, string userId)
         {
             try
             {
+               
                 var result = likeService.GetLikeByPostAndUser(postId, userId);
                 if (result.Success)
                 {
-                    return StatusCode(200, result.Message);
+                    return StatusCode(200, postId);
                 }
                 else
                 {
-                    return StatusCode(400, result.Message);
+                    return StatusCode(200, 0);
                 }
             }
             catch (Exception ex)
@@ -91,7 +63,8 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpGet, Route("GetLikesByPost/{postId}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult GetLikesByPost(int postId)
         {
             try
@@ -106,30 +79,9 @@ namespace MyTwitterAPI.Controllers
             }
         }
 
-        [HttpDelete, Route("DeleteLike/{LikeId}")]
-       // [Authorize(Roles = "Admin")]
-        public IActionResult DeleteLike(int LikeId)
-        {
-            try
-            {
-                var result = likeService.DeleteLike(LikeId);
-                if (result.Success)
-                {
-                    return StatusCode(200, result.Message);
-                }
-                else
-                {
-                    return StatusCode(400, result.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return StatusCode(400, ex.Message);
-            }
-        }
         [HttpDelete, Route("DeleteLikeByUserPost/{postId}/{userId}")]
-        // [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
+        //
         public IActionResult DeleteLikeByUserPost(int postId, string userId)
         {
             try
@@ -141,7 +93,7 @@ namespace MyTwitterAPI.Controllers
                 }
                 else
                 {
-                    return StatusCode(400, result.Message);
+                    return StatusCode(200, result.Message);
                 }
             }
             catch (Exception ex)

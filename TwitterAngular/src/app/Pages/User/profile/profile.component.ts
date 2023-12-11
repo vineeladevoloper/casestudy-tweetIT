@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserDTO } from '../../../Models/User/user-dto';
 import { ActivatedRoute ,Router} from '@angular/router';
-import { HttpClient,HttpClientModule } from '@angular/common/http';
+import { HttpClient,HttpClientModule ,HttpHeaders} from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -17,7 +17,16 @@ export class ProfileComponent {
   role?:any;
   errMsg: string = '';
   isUserExist: boolean = false;
-  constructor(private activateRoute:ActivatedRoute,private http:HttpClient){
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    }),
+  };
+  constructor(private activateRoute:ActivatedRoute,private http:HttpClient,private router:Router){
+    if(localStorage.getItem('role')==null){
+      this.router.navigateByUrl('**');
+    }
     this.user=new UserDTO();
     this.role=localStorage.getItem('role');
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
@@ -27,7 +36,7 @@ export class ProfileComponent {
   search() {
     this.http
       .get<UserDTO>(
-        'http://localhost:5250/api/User/GetUserById/' + this.userId
+        'http://localhost:5250/api/User/GetUserById/' + this.userId,this.httpOptions
       )
       .subscribe((response) => {
         console.log(response);

@@ -10,7 +10,7 @@ namespace MyTwitterAPI.Entities
         public string? UserId { get; set; }
         [Required]
         [StringLength(25)]
-        public string? UserName { get; set; }
+        public string? Name { get; set; }
         [Required]
         [StringLength(20)]
         public string? Role { get; set; }
@@ -20,7 +20,7 @@ namespace MyTwitterAPI.Entities
         [Required]
         [StringLength(15)]
         public string? Password { get; set; }
-        public string? UserType { get; set; }
+        public string? Type { get; set; }
         public string? Status { get; set; }
         public string? ActionById { get; set; }
         [ForeignKey("ActionById")]

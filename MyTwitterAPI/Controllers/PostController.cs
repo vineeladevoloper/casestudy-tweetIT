@@ -28,30 +28,29 @@ namespace MyTwitterAPI.Controllers
             this._logger = logger;
         }
         [HttpPost, Route("AddPost")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
+        //
         public IActionResult AddPost(PostWithoutIdDTO postdto)
         {
             Post post=_mapper.Map<Post>(postdto);
-            //Console.WriteLine(postdto.UserId);
             post.User = userService.GetUserById(postdto.UserId);
             post.DateandTime = DateTime.Now;
             post.ValidatedorBlocked = null;
             post.ActionDoneById = null;
             post.ActionDOneUser = null;
-            //Console.WriteLine(post.User.UserName);
             postService.AddPost(post);
             PostDTO postnew=_mapper.Map<PostDTO>(post);
             return StatusCode(200, postnew);
         }
         [HttpGet,Route("GetAllPosts")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult GetAllPost() 
         {
             try
             {
 
                 List<PostDTO> posts = postService.GetAllPost();
-               // List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(posts);
                 return StatusCode(200, posts);
             }
             catch (Exception ex)
@@ -61,7 +60,8 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("GetPostById/{postId}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult GetPostById(int postId)
         {
             try
@@ -77,7 +77,8 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("SearchPostByTitle/{searchTerm}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult SearchPostByTitle(string searchTerm)
         {
             try
@@ -93,8 +94,27 @@ namespace MyTwitterAPI.Controllers
             }
         }
 
+        [HttpGet, Route("SearchPostByUser/{searchName}")]
+        [AllowAnonymous]
+        //
+        public IActionResult SearchPostByUser(string searchName)
+        {
+            try
+            {
+
+                List<PostDTO> post = postService.SearchPostsByUser(searchName);
+                return StatusCode(200, post);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message);
+                return StatusCode(400, ex.Message);
+            }
+        }
+
         [HttpGet, Route("ListPostByUserId/{userId}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult ListPostByUserId(string userId)
         {
             try
@@ -111,13 +131,12 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpGet, Route("SearchPostsByTitleAndUserId/{userId}/{searchTerm}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
+        //
         public IActionResult SearchPostsByTitleAndUserId(string userId, string searchTerm)
         {
             try
             {
-               // Console.WriteLine(userId + " " + searchTerm);
-
                 List<PostDTO> post = postService.SearchPostsByTitleAndUserId(userId,searchTerm);
                 return StatusCode(200, post);
             }
@@ -130,7 +149,8 @@ namespace MyTwitterAPI.Controllers
 
 
         [HttpPut,Route("EditPost")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
+        //
         public IActionResult EditPost(PostDTO postdto)
         {
             try
@@ -152,7 +172,8 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpDelete,Route("DeletePost/{PostId}")]
-       // [AllowAnonymous]
+        [Authorize(Roles = "User")]
+        //
         public IActionResult DeletePost(int PostId) 
         {
             try
@@ -167,22 +188,6 @@ namespace MyTwitterAPI.Controllers
 
                     return StatusCode(400, result.Message);
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message);
-                return StatusCode(400, ex.Message);
-            }
-        }
-        [HttpGet, Route("GetPostByYear/{year}")]
-        //[AllowAnonymous]
-        public IActionResult GetPostByYear(int year)
-        {
-            try
-            {
-                List<Post> posts = postService.GetPostByYear(year);
-                List<PostDTO> postDTOs = _mapper.Map<List<PostDTO>>(posts);
-                return StatusCode(200, postDTOs);
             }
             catch (Exception ex)
             {

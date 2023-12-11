@@ -14,6 +14,7 @@ import { HttpClient ,HttpClientModule,HttpHeaders} from '@angular/common/http';
 })
 export class RegisterComponent {
   user:UserDTO;
+  errMsg:string='';
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -35,13 +36,21 @@ export class RegisterComponent {
     console.log(JSON.stringify(this.user));
     console.log(this.user);
     this.http.post('http://localhost:5250/api/User/Register',this.user,this.httpOptions)
-    .subscribe((response)=>{
+    .subscribe(
+      (response:any)=>{
       console.log(response);
-    })
-    this.router.navigateByUrl('login');
+      this.router.navigateByUrl('login');
+    },
+    (error: any) => {
+      // Handle error here
+      console.error('Error:', error.error);
+      this.errMsg=error.error;
+    }
+    );
   }
 
   onReset(form: NgForm): void {
+    this.errMsg='';
     form.reset();
   }
   redirectToLogin() {
