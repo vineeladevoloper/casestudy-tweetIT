@@ -12,12 +12,13 @@
         <img *ngIf="post.img" [src]="createImgPath(post.img)" alt="Post Image" class="card-img-top custom-image">
         <div class="card-body">
           <h5 class="card-title">{{ 'Title: ' + post.title }}</h5>
-          <p class="card-text">{{ 'Description: ' + post.description }}</p>
+          <p *ngIf="post.description!=null" class="card-text">{{ 'Description: ' + post.description }}</p>
           <p class="card-text">{{ 'User Name: ' + post.userName }}
             <span *ngIf="post.userType=='Verified'" class="verified">✔</span>
           </p>
           <p class="card-text">{{ 'Date and Time: ' + (post.dateandTime | date:'yyyy-MM-dd HH:mm') }}</p>
           <button type="submit" class="btn btn-primary" (click)="viewpost(post.postId)">View Post</button>
+          <button type="submit" class="btn btn-primary" (click)="viewprofile(post.userId)">View Profile</button>
         </div>
       </div>
     </div>

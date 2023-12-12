@@ -72,7 +72,7 @@ export class AllPostsComponent {
     .get<PostWithId[]>('http://localhost:5250/api/Post/GetAllPosts',this.httpOptions)
     .subscribe((response)=>{
       this.posts=response;
-      // console.log(this.posts);
+      console.log(this.posts);
     })
   }
   public createImgPath = (url: any) => { 
@@ -85,5 +85,15 @@ export class AllPostsComponent {
       this.router.navigateByUrl('user-dashboard/view-post/'+postId);
     else
       this.router.navigateByUrl('admin-dashboard/view-post/'+postId);
+  }
+
+  viewprofile(userId:any){
+    console.log(userId);
+    if(this.userRole=='user'){
+      this.router.navigateByUrl('user-dashboard/profile/'+userId);
+    }
+    else{
+      this.router.navigateByUrl('admin-dashboard/profile/'+userId);
+    }
   }
 }

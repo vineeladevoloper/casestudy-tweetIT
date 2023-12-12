@@ -15,6 +15,7 @@
               <li class="list-group-item"><strong>User Type:</strong> {{user.type}}</li>
               <li *ngIf="role === 'User'" class="list-group-item"><strong>Status for Upgrade:</strong> {{user.status}}</li>
             </ul>
+            <button *ngIf="following" class="btn btn-primary" (click)="followRequest(user.userId)">Follow Request</button>
           </div>
         </div>
       </div>

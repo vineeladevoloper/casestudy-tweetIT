@@ -31,6 +31,9 @@
                 <a *ngIf="user.type=='Verified'" class="nav-link" [routerLink]="'comment-notifications/' + user.userId">Comment Notifications</a>
               </li> 
               <li class="nav-item">
+                <a *ngIf="user.type=='Verified'" class="nav-link" [routerLink]="'follower'">Follow request and Followers List</a>
+              </li> 
+              <li class="nav-item">
                 <button class="btn btn-primary " (click)="logout()">Log out</button>
               </li>
             </ul>

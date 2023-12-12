@@ -19,6 +19,7 @@ export class PostByUserComponent {
   post:PostWithId;
   searchTerm?:string='';
   user:UserDTO;
+  visitUserId?:any;
   role:any;
   httpOptions = {
     headers: new HttpHeaders({
@@ -34,6 +35,8 @@ export class PostByUserComponent {
     this.user=new UserDTO();
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     this.role=localStorage.getItem('role');
+    this.visitUserId=localStorage.getItem('userId');
+
     this.getPosts();
   }
   onSearch(): void {

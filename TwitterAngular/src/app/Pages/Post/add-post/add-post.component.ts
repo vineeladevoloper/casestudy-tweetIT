@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient, HttpClientModule ,HttpHeaders} from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule ,NgForm } from '@angular/forms';
 import { PostWithoutIdDTO } from '../../../Models/Post/post-without-id-dto';
 import { UploadImgComponent } from '../upload-img/upload-img.component';
 import { RouterOutlet,Router ,ActivatedRoute} from '@angular/router';
@@ -41,16 +41,16 @@ export class AddPostComponent {
       this.post.img=this.response.dbPath;
     }
  
-   onSubmit(): void {
-    console.log(this.post);
-      this.http.post('http://localhost:5250/api/Post/AddPost', this.post,this.httpOptions)
-      .subscribe(response => {
-        console.log('Post created successfully', response);
-        this.msg='Post created successfully';
-        this.router.navigateByUrl('user-dashboard/all-posts');
-      }, error => {
-        console.error('Error creating post', error);
-        this.msg='Error creating post';
-      });
-  }
+    onSubmit(): void {
+      console.log(this.post);
+      this.http.post('http://localhost:5250/api/Post/AddPost', this.post, this.httpOptions)
+        .subscribe(response => {
+          console.log('Post created successfully', response);
+          this.msg = 'Post created successfully';
+          this.router.navigateByUrl('user-dashboard/all-posts');
+        }, error => {
+          console.error('Error creating post', error);
+          this.msg = 'Error creating post';
+        });
+    }
 }

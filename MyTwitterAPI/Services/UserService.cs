@@ -16,6 +16,7 @@ namespace MyTwitterAPI.Services
         {
             this.context = context;
             this._mapper = mapper;
+ 
         }
 
         public ResultModel AddUser(User user)
@@ -32,31 +33,8 @@ namespace MyTwitterAPI.Services
                 }
                 context.Users.Add(user);
                 context.SaveChanges();
+
                 return new ResultModel { Success = true, Message = "User added successfully." };
-            }
-            catch (Exception ex)
-            {
-                return new ResultModel { Success = false, Message = $"Error: {ex.Message}" };
-            }
-        }
-
-        public ResultModel DeleteUser(string userid)
-        {
-            try
-            {
-                User user = context.Users.Find(userid);
-
-                if (user != null)
-                {
-                    context.Remove(user);
-                    context.SaveChanges();
-
-                    return new ResultModel { Success = true, Message = "User deleted successfully." };
-                }
-                else
-                {
-                    return new ResultModel { Success = false, Message = "User not found." };
-                }
             }
             catch (Exception ex)
             {

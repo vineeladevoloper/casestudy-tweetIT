@@ -3,7 +3,7 @@
   
     <div class="card-body">
       <h5 class="card-title font-weight-bold">{{ post.title }}</h5>
-      <p class="card-text">{{ post.description }}</p>
+      <p *ngIf="post.description!=null" class="card-text">{{ post.description }}</p>
         <p class="card-text"><strong>User Name:</strong> {{ post.userName }}
           <span *ngIf="post.userType=='Verified'" class="verified">✔</span>
         </p>

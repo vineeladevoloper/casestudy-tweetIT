@@ -10,7 +10,6 @@ namespace MyTwitterAPI.Services
         User GetUserById(string userid);
         List<User> GetUsersByName(string searchTerm);
         ResultModel AddUser(User user);
-        ResultModel DeleteUser(string userid);
         ResultModel EditUser(UserwithPWDDTO userdto);
         User ValidteUser(string email, string password);
         ResultModel UpgradeUserRequest(string userId, string adminId);

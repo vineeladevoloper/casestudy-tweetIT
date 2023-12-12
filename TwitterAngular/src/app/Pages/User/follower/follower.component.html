@@ -1,0 +1,68 @@
+<div class="container">
+    <h2 class="mt-4 mb-4">Follow Request</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Role</th>
+                <th>User Email</th>
+                <th>User Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of users">
+                    <td>{{u.name}}<span *ngIf="u.type=='Verified'" class="verified">✔</span></td>
+                    <td>{{u.role}}</td>
+                    <td>{{u.userEmail}}</td>
+                    <td>{{u.type}}</td>
+                    <td><button class="btn btn-primary" (click)="acceptRequest(u.userId)">Accept</button></td>
+            </tr>
+        </tbody>
+    </table> 
+</div>
+
+<div class="container">
+    <h2 class="mt-4 mb-4">Followers</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Role</th>
+                <th>User Email</th>
+                <th>User Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of followers">
+                    <td>{{u.name}}<span *ngIf="u.type=='Verified'" class="verified">✔</span></td>
+                    <td>{{u.role}}</td>
+                    <td>{{u.userEmail}}</td>
+                    <td>{{u.type}}</td>
+                    <td><button class="btn btn-primary" (click)="postByUser(u.userId)">Posts</button></td>
+            </tr>
+        </tbody>
+    </table> 
+</div>
+
+<div class="container">
+    <h2 class="mt-4 mb-4">Following</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Role</th>
+                <th>User Email</th>
+                <th>User Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let u of following">
+                    <td>{{u.name}}<span *ngIf="u.type=='Verified'" class="verified">✔</span></td>
+                    <td>{{u.role}}</td>
+                    <td>{{u.userEmail}}</td>
+                    <td>{{u.type}}</td>
+                    <td><button class="btn btn-primary" (click)="postByUser(u.userId)">Posts</button></td>
+            </tr>
+        </tbody>
+    </table> 
+</div>

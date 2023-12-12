@@ -219,19 +219,6 @@ namespace MyTwitterAPI.Services
             }
         }
         
-        public List<Post> GetPostByYear(int year)
-        {
-            try
-            {
-                List<Post> posts = context.Posts.Where(p => p.DateandTime.Year == year).ToList();
-                return posts;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
 
     }
 }

@@ -1,20 +1,21 @@
-
 <div class="container mt-5">
   <h2>Create Post</h2>
-  <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+  <form (ngSubmit)="f.form.valid && onSubmit()" class="needs-validation" #f="ngForm" novalidate>
 
     <div class="mb-3">
       <label for="title" class="form-label">Title:</label>
-      <input type="text" class="form-control" id="title" [(ngModel)]="post.title" name="title" required>
-      <div class="invalid-feedback">
+      <input type="text" class="form-control" id="title" [(ngModel)]="post.title" name="title" required
+             #title="ngModel" [ngClass]="{ 'is-invalid': f.submitted && title.invalid }">
+      <div *ngIf="f.submitted && title.invalid" class="invalid-feedback">
         Please provide a valid title.
       </div>
     </div>
 
     <div class="mb-3">
       <label for="description" class="form-label">Description:</label>
-      <textarea class="form-control" id="description" [(ngModel)]="post.description" name="description" required></textarea>
-      <div class="invalid-feedback">
+      <textarea class="form-control" id="description" [(ngModel)]="post.description" name="description" required
+                #description="ngModel" [ngClass]="{ 'is-invalid': f.submitted && description.invalid }"></textarea>
+      <div *ngIf="f.submitted && description.invalid" class="invalid-feedback">
         Please provide a valid description.
       </div>
     </div>
@@ -25,5 +26,5 @@
 
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
-  {{msg}}
+  <div class="text-danger">{{msg}}</div>
 </div>

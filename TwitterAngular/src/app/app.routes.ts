@@ -16,6 +16,7 @@ import { ViewPostComponent } from './Pages/Post/view-post/view-post.component';
 import { AdminNotificationComponent } from './Pages/User/admin-notification/admin-notification.component';
 import { CommentNotificationComponent } from './Pages/User/comment-notification/comment-notification.component';
 import { NotFoundComponent } from './Pages/not-found/not-found.component';
+import { FollowerComponent } from './Pages/User/follower/follower.component';
 
 export const routes: Routes = [
   { path:'',component:LoginComponent},
@@ -34,7 +35,8 @@ export const routes: Routes = [
       { path:'post-by-user/:uid',component:PostByUserComponent},
       { path:'edit-post/:pid',component:EditPostComponent},   
       { path:'view-post/:pid',component:ViewPostComponent},  
-      { path:'comment-notifications/:uid',component:CommentNotificationComponent} 
+      { path:'comment-notifications/:uid',component:CommentNotificationComponent} ,
+      { path: 'follower',component:FollowerComponent},
     ]
     },
     {path:'admin-dashboard',component:AdminDashboardComponent,

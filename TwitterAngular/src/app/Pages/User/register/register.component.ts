@@ -4,6 +4,8 @@ import { FormsModule,NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HttpClient ,HttpClientModule,HttpHeaders} from '@angular/common/http';
+import * as emailjs from 'emailjs-com';
+
 
 @Component({
   selector: 'app-register',
@@ -40,6 +42,7 @@ export class RegisterComponent {
       (response:any)=>{
       console.log(response);
       this.router.navigateByUrl('login');
+      this.sendEmail();
     },
     (error: any) => {
       // Handle error here
@@ -55,5 +58,22 @@ export class RegisterComponent {
   }
   redirectToLogin() {
     this.router.navigateByUrl('login');
+  }
+
+  sendEmail() {
+    const templateParams = {
+      to_name: this.user.name,
+      from_name: 'TweetIT',
+      
+      to_mail: this.user.userEmail
+    };
+  
+    emailjs.init("a4qr0GhxxEBz2cGnj");
+    emailjs.send('service_9ynvzfd', 'template_3zqbeoi', templateParams)
+      .then((response) => {
+        console.log('Email sent successfully:', response);
+      }, (error) => {
+        console.error('Error sending email:', error);
+      });
   }
 }

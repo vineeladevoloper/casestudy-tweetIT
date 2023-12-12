@@ -15,6 +15,5 @@ namespace MyTwitterAPI.Services
         List<PostDTO> SearchPostsByTitleAndUserId(string userId, string searchTerm);
         ResultModel EditPost(PostDTO postdto);
         ResultModel DeletePost(int postId);
-        List<Post> GetPostByYear(int year);
-    }
+     }
 }

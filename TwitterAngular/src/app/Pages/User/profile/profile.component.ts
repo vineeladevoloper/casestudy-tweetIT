@@ -17,6 +17,8 @@ export class ProfileComponent {
   role?:any;
   errMsg: string = '';
   isUserExist: boolean = false;
+  following:boolean=false;
+  loggedinUserId?:any;
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
@@ -31,6 +33,7 @@ export class ProfileComponent {
     this.role=localStorage.getItem('role');
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
     console.log(this.userId);
+    this.checkFollowing();
     this.search();
   }
   search() {
@@ -49,5 +52,42 @@ export class ProfileComponent {
           this.isUserExist = false;
         }
       });
+  }
+  followRequest(userID:any){
+      const requestBody = {
+        userId: userID,
+        followerId: localStorage.getItem('userId'),
+      };
+      this.http
+      .post('http://localhost:5250/api/Follower/SendFollowRequest/',requestBody,this.httpOptions)
+      .subscribe((response) => {
+        console.log(response);
+      });
+  }
+
+  checkFollowing(){
+    const requestBody = {
+      userId: this.userId,
+      followerId: localStorage.getItem('userId'),
+    };
+    if(this.role=='Admin'){
+      this.following=false;
+    }
+    else if(requestBody.userId==requestBody.followerId){
+      this.following=false;
+    }
+    else{
+      this.http
+      .put('http://localhost:5250/api/Follower/CheckFollowing',requestBody,this.httpOptions)
+      .subscribe((response) => {
+        console.log(response);
+        if(response==true){
+          this.following=false;
+        }
+        else{
+          this.following=true;
+        }
+      });
+    }
   }
 }
