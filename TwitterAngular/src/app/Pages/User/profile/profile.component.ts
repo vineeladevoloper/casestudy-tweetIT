@@ -32,8 +32,7 @@ export class ProfileComponent {
     this.user=new UserDTO();
     this.role=localStorage.getItem('role');
     this.activateRoute.params.subscribe((p) => (this.userId = p['uid']));
-    console.log(this.userId);
-    this.checkFollowing();
+    // console.log(this.userId);
     this.search();
   }
   search() {
@@ -42,15 +41,17 @@ export class ProfileComponent {
         'http://localhost:5250/api/User/GetUserById/' + this.userId,this.httpOptions
       )
       .subscribe((response) => {
-        console.log(response);
+        // console.log(response);
         if (response != null) {
           this.user = response;
+          // console.log(this.user);
           this.isUserExist = true;
           this.errMsg = '';
         } else {
           this.errMsg = 'Invalid User Id';
           this.isUserExist = false;
         }
+        this.checkFollowing();
       });
   }
   followRequest(userID:any){
@@ -70,7 +71,11 @@ export class ProfileComponent {
       userId: this.userId,
       followerId: localStorage.getItem('userId'),
     };
+    // console.log(this.user);
     if(this.role=='Admin'){
+      this.following=false;
+    }
+    else if(this.user.type=='Normal'){
       this.following=false;
     }
     else if(requestBody.userId==requestBody.followerId){

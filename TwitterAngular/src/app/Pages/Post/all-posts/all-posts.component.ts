@@ -89,7 +89,8 @@ export class AllPostsComponent {
 
   viewprofile(userId:any){
     console.log(userId);
-    if(this.userRole=='user'){
+    if(this.userRole=='User'){
+      console.log(userId);
       this.router.navigateByUrl('user-dashboard/profile/'+userId);
     }
     else{

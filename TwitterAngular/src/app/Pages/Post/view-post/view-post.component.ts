@@ -76,10 +76,6 @@ export class ViewPostComponent {
     this.comment.commentText=this.newCommentText;
     this.comment.postId=this.postId;
     this.comment.userId=localStorage.getItem('userId')?.toString();
-    console.log(this.comment.commentText);
-    console.log(this.comment.postId);
-    console.log(this.comment.userId);
-    console.log(this.post.userId);
 
     this.http
       .post('http://localhost:5250/api/Comment/AddComment',this.comment,this.httpOptions)

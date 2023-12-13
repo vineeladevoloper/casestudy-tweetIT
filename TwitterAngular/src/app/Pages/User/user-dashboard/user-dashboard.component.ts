@@ -27,11 +27,11 @@ export class UserDashboardComponent {
     }
       this.user=new UserDTO();
       this.userId=localStorage.getItem('userId');
-      console.log(this.userId);
+      // console.log(this.userId);
       this.http.get('http://localhost:5250/api/User/GetUserById/'+this.userId,this.httpOptions)
       .subscribe((response)=>{
         this.user=response;
-        console.log(this.user);
+        // console.log(this.user);
       })
   }
   logout(){

@@ -51,7 +51,7 @@ export class FollowerComponent {
     this.http
     .put('http://localhost:5250/api/Follower/AcceptFollowRequest',requestBody,this.httpOptions)
     .subscribe((response) => {
-      console.log(response);
+      // console.log(response);
       this.getfollowRequest();
       this.getFollowers();
     });
@@ -62,7 +62,7 @@ export class FollowerComponent {
     .get<UserDTO[]>('http://localhost:5250/api/Follower/GetFollowers/'+this.userId,this.httpOptions)
     .subscribe((response)=>{
       this.followers=response;
-      console.log(this.followers)
+      // console.log(this.followers)
     })
   }
 
@@ -71,7 +71,7 @@ export class FollowerComponent {
     .get<UserDTO[]>('http://localhost:5250/api/Follower/GetFollowing/'+this.userId,this.httpOptions)
     .subscribe((response)=>{
       this.following=response;
-      console.log(this.followers)
+      // console.log(this.followers)
     })
   }
 
