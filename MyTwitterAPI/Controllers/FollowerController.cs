@@ -28,7 +28,7 @@ namespace MyTwitterAPI.Controllers
             this._logger = logger;
         }
         [HttpPost, Route("SendFollowRequest")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         //
         public IActionResult SendFollowRequest([FromBody] FollowModel model)
         {
@@ -47,7 +47,7 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpPut, Route("AcceptFollowRequest")]
-        //[Authorize(Roles = "User")]
+        [Authorize(Roles = "User")]
         //
         public IActionResult AcceptFollowRequest([FromBody] FollowModel model)
         {
@@ -66,6 +66,7 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpPut, Route("CheckFollowing")]
+        [Authorize(Roles = "User")]
         public IActionResult CheckFollowing([FromBody] FollowModel model)
         {
             try
@@ -82,6 +83,7 @@ namespace MyTwitterAPI.Controllers
 
 
         [HttpGet,Route("GetPendingFollowRequest/{userId}")]
+        [Authorize(Roles = "User")]
         public IActionResult GetPendingFollowRequests(string userId)
         {
             try
@@ -97,6 +99,7 @@ namespace MyTwitterAPI.Controllers
             }
         }
         [HttpGet, Route("GetFollowers/{userId}")]
+        [Authorize(Roles = "User")]
         public IActionResult GetFollowers(string userId)
         {
             try
@@ -113,6 +116,7 @@ namespace MyTwitterAPI.Controllers
         }
 
         [HttpGet, Route("GetFollowing/{userId}")]
+        [Authorize(Roles = "User")]
         public IActionResult GetFollowing(string userId)
         {
             try
